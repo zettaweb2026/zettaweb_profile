@@ -16,7 +16,7 @@ import './index.css';
 const App = () => {
   useEffect(() => {
     // Set document title
-    document.title = 'WENEXA - Building Digital Solutions for the Future';
+    document.title = 'Zettaweb - Building Digital Solutions for the Future';
   }, []);
 
   return (

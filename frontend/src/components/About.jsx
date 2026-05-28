@@ -1,178 +1,214 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Target, Eye, Award, Users } from 'lucide-react';
+import { Target, Eye, Award, Users, Shield, Zap } from 'lucide-react';
 import { Card } from './ui/card';
 
 export const About = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0.08,
   });
 
   const values = [
     {
-      icon: Target,
+      icon: Zap,
       title: 'Innovation',
-      description: 'Pushing boundaries with cutting-edge technologies and creative solutions',
+      description: 'Pushing boundaries with cutting-edge technologies and creative solutions.',
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
     },
     {
       icon: Award,
       title: 'Reliability',
-      description: 'Delivering consistent quality and dependable results on every project',
+      description: 'Delivering consistent quality and dependable results on every single deployment.',
+      color: 'text-secondary',
+      bgColor: 'bg-secondary/10',
     },
     {
       icon: Users,
       title: 'Scalability',
-      description: 'Building solutions that grow with your business needs',
+      description: 'Building solutions engineered to grow side-by-side with your business demands.',
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
     },
     {
-      icon: Eye,
+      icon: Shield,
       title: 'Security',
-      description: 'Implementing robust security measures to protect your digital assets',
+      description: 'Implementing ironclad security standards to protect your vital digital assets.',
+      color: 'text-secondary',
+      bgColor: 'bg-secondary/10',
     },
   ];
 
   const timeline = [
-    { year: '2020', event: 'WENEXA Founded', description: 'Started with a vision to transform digital experiences' },
-    { year: '2021', event: 'First Major Client', description: 'Delivered enterprise-level solutions' },
-    { year: '2022', event: 'Expanded Services', description: 'Added AI/ML and Cloud solutions to portfolio' },
-    { year: '2023', event: '100+ Projects', description: 'Reached milestone of 100 successful projects' },
-    { year: '2024', event: 'Innovation Hub', description: 'Established R&D division for emerging technologies' },
+    { year: '2020', event: 'Zettaweb Founded', description: 'Started with a vision to transform digital experiences.' },
+    { year: '2021', event: 'First Major Client', description: 'Delivered enterprise-level cloud integrations.' },
+    { year: '2022', event: 'Expanded Services', description: 'Added advanced AI/ML models to our solutions portfolio.' },
+    { year: '2023', event: '100+ Projects Milestone', description: 'Reaching over a hundred successful client launches worldwide.' },
+    { year: '2024', event: 'Innovation Hub', description: 'Established a dedicated R&D division for emerging web3 and neural architectures.' },
   ];
 
   return (
-    <section id="about" className="py-20 lg:py-32 relative">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="about" className="py-20 lg:py-32 relative overflow-hidden">
+      {/* Background visual assets */}
+      <div className="absolute top-1/4 left-0 w-[450px] h-[450px] bg-primary/5 rounded-full blur-[140px] pointer-events-none select-none"></div>
+      <div className="absolute bottom-1/4 right-0 w-[350px] h-[350px] bg-secondary/5 rounded-full blur-[120px] pointer-events-none select-none"></div>
+
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
+        {/* Title Header */}
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <div className="inline-block glass px-4 py-2 rounded-full mb-4">
-            <span className="text-sm font-medium text-primary">About Us</span>
+          <div className="inline-block glass px-4 py-2 rounded-full mb-4 border-primary/20 animate-pulse-glow-blue">
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider">About Us</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
-            Who <span className="gradient-text">We Are</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
+            Who We <span className="gradient-text glow-text">Are</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            WENEXA is a forward-thinking tech startup dedicated to building innovative digital solutions 
+            Zettaweb is a forward-thinking tech company dedicated to building innovative digital solutions 
             that empower businesses to thrive in the digital age. We combine creativity, technical excellence, 
             and strategic thinking to deliver exceptional results.
           </p>
         </motion.div>
 
-        {/* Mission & Vision */}
-        <div className="grid md:grid-cols-2 gap-8 mb-20">
+        {/* Mission & Vision cards */}
+        <div className="grid md:grid-cols-2 gap-8 mb-24">
+          {/* Mission Card */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -40 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
           >
-            <Card className="glass p-8 h-full hover:glow-border transition-all">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
-                <Target className="w-8 h-8 text-primary" />
+            <Card className="glass p-8 h-full rounded-3xl border-primary/20 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(63,167,230,0.15)] flex flex-col justify-between group">
+              <div>
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
+                  <Target className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-foreground group-hover:text-primary transition-colors">Our Mission</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+                  To empower businesses with innovative digital solutions that drive growth, efficiency, and 
+                  competitive advantage. We strive to be the trusted technology partner that transforms visions 
+                  into successful digital realities.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold mb-4">Our Mission</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                To empower businesses with innovative digital solutions that drive growth, efficiency, and 
-                competitive advantage. We strive to be the trusted technology partner that transforms visions 
-                into successful digital realities.
-              </p>
+              <div className="mt-6 text-xs font-semibold uppercase tracking-wider text-primary font-mono select-none">
+                // TARGET_EXECUTE
+              </div>
             </Card>
           </motion.div>
 
+          {/* Vision Card */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 40 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
           >
-            <Card className="glass p-8 h-full hover:glow-border transition-all">
-              <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mb-6">
-                <Eye className="w-8 h-8 text-secondary" />
+            <Card className="glass p-8 h-full rounded-3xl border-secondary/20 hover:border-secondary/50 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(243,191,74,0.15)] flex flex-col justify-between group">
+              <div>
+                <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-secondary/20 transition-all duration-300">
+                  <Eye className="w-8 h-8 text-secondary" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-foreground group-hover:text-secondary transition-colors">Our Vision</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+                  To be a global leader in digital innovation, recognized for delivering cutting-edge solutions 
+                  that shape the future of technology. We envision a world where businesses of all sizes can 
+                  leverage advanced technology to achieve their full potential.
+                </p>
               </div>
-              <h3 className="text-2xl font-bold mb-4">Our Vision</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                To be a global leader in digital innovation, recognized for delivering cutting-edge solutions 
-                that shape the future of technology. We envision a world where businesses of all sizes can 
-                leverage advanced technology to achieve their full potential.
-              </p>
+              <div className="mt-6 text-xs font-semibold uppercase tracking-wider text-secondary font-mono select-none">
+                // FUTURE_FORECAST
+              </div>
             </Card>
           </motion.div>
         </div>
 
-        {/* Core Values */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mb-20"
-        >
-          <h3 className="text-2xl sm:text-3xl font-bold text-center mb-12">
-            Our <span className="gradient-text">Core Values</span>
-          </h3>
+        {/* Core Values grid */}
+        <div className="mb-28">
+          <motion.h3 
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-2xl sm:text-3xl font-extrabold text-center mb-12"
+          >
+            Our Core <span className="gradient-text glow-text">Values</span>
+          </motion.h3>
+          
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => {
               const Icon = value.icon;
               return (
                 <motion.div
                   key={value.title}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                  transition={{ duration: 0.5, delay: 0.1 + index * 0.08 }}
                 >
-                  <Card className="glass p-6 h-full hover:scale-105 transition-all group">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                      <Icon className="w-6 h-6 text-primary" />
+                  <Card className="glass-card p-6 h-full flex flex-col justify-between group rounded-2xl">
+                    <div>
+                      <div className={`w-12 h-12 ${value.bgColor} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                        <Icon className={`w-6 h-6 ${value.color}`} />
+                      </div>
+                      <h4 className="text-lg font-bold mb-2 text-foreground group-hover:text-primary transition-colors">{value.title}</h4>
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{value.description}</p>
                     </div>
-                    <h4 className="text-lg font-semibold mb-2">{value.title}</h4>
-                    <p className="text-sm text-muted-foreground">{value.description}</p>
                   </Card>
                 </motion.div>
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Timeline */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          <h3 className="text-2xl sm:text-3xl font-bold text-center mb-12">
-            Our <span className="gradient-text">Journey</span>
-          </h3>
-          <div className="max-w-4xl mx-auto">
-            <div className="relative">
-              {/* Timeline Line */}
-              <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-primary/30 hidden sm:block"></div>
-              
+        {/* Timeline Journey */}
+        <div className="relative">
+          <motion.h3
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-2xl sm:text-3xl font-extrabold text-center mb-16"
+          >
+            Our <span className="gradient-text glow-text">Journey</span>
+          </motion.h3>
+
+          <div className="max-w-3xl mx-auto relative px-4 sm:px-6">
+            {/* Timeline Line */}
+            <div className="absolute left-8 top-4 bottom-4 w-[2px] bg-gradient-to-b from-primary via-secondary to-primary/20 hidden sm:block"></div>
+            
+            <div className="space-y-12">
               {timeline.map((item, index) => (
                 <motion.div
                   key={item.year}
                   initial={{ opacity: 0, x: -30 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-                  className="relative pl-0 sm:pl-20 mb-8 last:mb-0"
+                  transition={{ duration: 0.5, delay: 0.2 + index * 0.08 }}
+                  className="relative pl-0 sm:pl-16 flex flex-col sm:flex-row items-start"
                 >
-                  {/* Year Badge */}
-                  <div className="absolute left-0 sm:left-4 w-16 h-16 glass rounded-full flex items-center justify-center border-2 border-primary">
-                    <span className="text-sm font-bold text-primary">{item.year}</span>
+                  {/* Timeline Badge Point */}
+                  <div className="absolute left-0 sm:left-4 w-10 h-10 rounded-full bg-background border-2 border-primary flex items-center justify-center shadow-lg z-10 hidden sm:flex">
+                    <div className="w-3.5 h-3.5 rounded-full bg-primary animate-pulse-glow-blue"></div>
                   </div>
                   
-                  {/* Content */}
-                  <Card className="glass p-6 ml-20 sm:ml-0">
-                    <h4 className="text-xl font-semibold mb-2">{item.event}</h4>
-                    <p className="text-muted-foreground">{item.description}</p>
-                  </Card>
+                  {/* Timeline Content Block */}
+                  <div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-6 items-start">
+                    <div className="inline-block glass px-4 py-1.5 rounded-full border border-primary/30 text-xs font-black font-mono text-primary bg-primary/5 min-w-[70px] text-center">
+                      {item.year}
+                    </div>
+                    
+                    <Card className="glass p-6 w-full rounded-2xl hover:border-primary/20 transition-all duration-300">
+                      <h4 className="text-lg font-bold text-foreground mb-1.5">{item.event}</h4>
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+                    </Card>
+                  </div>
                 </motion.div>
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

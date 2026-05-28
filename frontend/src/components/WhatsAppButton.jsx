@@ -12,8 +12,8 @@ export const WhatsAppButton = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const whatsappNumber = '+919674171451'; // Replace with actual number
-  const whatsappMessage = 'Hi WENEXA! I would like to discuss a project.';
+  const whatsappNumber = '919674171451'; // Replace with actual number
+  const whatsappMessage = 'Hi Zettaweb! I would like to discuss a project.';
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
   const handleClick = () => {
@@ -51,10 +51,10 @@ export const WhatsAppButton = () => {
               onMouseLeave={() => setShowTooltip(false)}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="w-14 h-14 bg-[#25D366] hover:bg-[#20BA5A] rounded-full shadow-lg flex items-center justify-center group transition-colors"
+              className="relative w-14 h-14 bg-[#25D366] hover:bg-[#20BA5A] rounded-full shadow-lg flex items-center justify-center group transition-colors"
               aria-label="Contact us on WhatsApp"
             >
-              <MessageCircle className="w-7 h-7 text-white" />
+              <MessageCircle className="w-7 h-7 text-white z-10" />
               
               {/* Pulse animation */}
               <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-75"></span>

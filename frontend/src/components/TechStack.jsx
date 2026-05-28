@@ -5,55 +5,60 @@ import { useInView } from 'react-intersection-observer';
 export const TechStack = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0.08,
   });
 
   const techCategories = [
     {
-      category: 'Frontend',
+      category: 'Frontend Development',
       technologies: [
-        { name: 'React', icon: '⚛️', description: 'UI Library' },
-        { name: 'Next.js', icon: '▲', description: 'React Framework' },
-        { name: 'Vue.js', icon: '🖖', description: 'Progressive Framework' },
-        { name: 'TypeScript', icon: 'TS', description: 'Type Safety' },
-        { name: 'Tailwind CSS', icon: '🎨', description: 'CSS Framework' },
+        { name: 'React', icon: '⚛️', description: 'UI Library', color: 'border-primary/20 hover:border-primary/60 hover:shadow-[0_0_20px_rgba(63,167,230,0.15)]' },
+        { name: 'Next.js', icon: '▲', description: 'React Framework', color: 'border-foreground/20 hover:border-foreground/60 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]' },
+        { name: 'Vue.js', icon: '🖖', description: 'Progressive Framework', color: 'border-green-500/20 hover:border-green-500/60 hover:shadow-[0_0_20px_rgba(34,197,94,0.15)]' },
+        { name: 'TypeScript', icon: 'TS', description: 'Type Safety', color: 'border-primary/25 hover:border-primary/70 hover:shadow-[0_0_20px_rgba(63,167,230,0.2)]' },
+        { name: 'Tailwind CSS', icon: '🎨', description: 'CSS Utility Framework', color: 'border-cyan-400/20 hover:border-cyan-400/60 hover:shadow-[0_0_20px_rgba(34,211,238,0.15)]' },
       ],
     },
     {
-      category: 'Backend',
+      category: 'Backend & APIs',
       technologies: [
-        { name: 'Node.js', icon: '🟢', description: 'Runtime Environment' },
-        { name: 'Python', icon: '🐍', description: 'Programming Language' },
-        { name: 'Express', icon: 'E', description: 'Web Framework' },
-        { name: 'FastAPI', icon: '⚡', description: 'Python Framework' },
-        { name: 'GraphQL', icon: 'GQL', description: 'Query Language' },
+        { name: 'Node.js', icon: '🟢', description: 'JS Runtime', color: 'border-green-500/20 hover:border-green-500/60 hover:shadow-[0_0_20px_rgba(34,197,94,0.15)]' },
+        { name: 'Python', icon: '🐍', description: 'General Purpose Language', color: 'border-secondary/20 hover:border-secondary/60 hover:shadow-[0_0_20px_rgba(243,191,74,0.15)]' },
+        { name: 'Express', icon: 'EX', description: 'Minimalist Framework', color: 'border-foreground/25 hover:border-foreground/60' },
+        { name: 'FastAPI', icon: '⚡', description: 'Python Framework', color: 'border-green-400/20 hover:border-green-400/60' },
+        { name: 'GraphQL', icon: '⬢', description: 'API Query Language', color: 'border-pink-500/20 hover:border-pink-500/60 hover:shadow-[0_0_20px_rgba(236,72,153,0.15)]' },
       ],
     },
     {
-      category: 'AI & ML',
+      category: 'Artificial Intelligence & ML',
       technologies: [
-        { name: 'TensorFlow', icon: '🧠', description: 'ML Framework' },
-        { name: 'PyTorch', icon: '🔥', description: 'Deep Learning' },
-        { name: 'OpenAI', icon: '🤖', description: 'AI Platform' },
-        { name: 'Scikit-learn', icon: '📊', description: 'ML Library' },
-        { name: 'Hugging Face', icon: '🤗', description: 'NLP Models' },
+        { name: 'TensorFlow', icon: '🧠', description: 'ML Ecosystem', color: 'border-orange-500/20 hover:border-orange-500/60 hover:shadow-[0_0_20px_rgba(249,115,22,0.15)]' },
+        { name: 'PyTorch', icon: '🔥', description: 'Deep Learning', color: 'border-red-500/20 hover:border-red-500/60 hover:shadow-[0_0_20px_rgba(239,68,68,0.15)]' },
+        { name: 'OpenAI', icon: '🤖', description: 'AI Models APIs', color: 'border-teal-500/25 hover:border-teal-500/60 hover:shadow-[0_0_20px_rgba(20,184,166,0.15)]' },
+        { name: 'Scikit-learn', icon: '📊', description: 'Data Analytics', color: 'border-primary/20 hover:border-primary/50' },
+        { name: 'Hugging Face', icon: '🤗', description: 'NLP & Transformers', color: 'border-yellow-400/20 hover:border-yellow-400/60' },
       ],
     },
     {
-      category: 'DevOps & Cloud',
+      category: 'Cloud & Infrastructure',
       technologies: [
-        { name: 'AWS', icon: '☁️', description: 'Cloud Platform' },
-        { name: 'Docker', icon: '🐳', description: 'Containerization' },
-        { name: 'Kubernetes', icon: 'K8s', description: 'Orchestration' },
-        { name: 'GitHub Actions', icon: '🔧', description: 'CI/CD' },
-        { name: 'Linux', icon: '🐧', description: 'Operating System' },
+        { name: 'AWS', icon: '☁️', description: 'Cloud Provider', color: 'border-orange-400/20 hover:border-orange-400/60 hover:shadow-[0_0_20px_rgba(251,146,60,0.15)]' },
+        { name: 'Docker', icon: '🐳', description: 'Containers', color: 'border-blue-400/25 hover:border-blue-400/60 hover:shadow-[0_0_20px_rgba(96,165,250,0.15)]' },
+        { name: 'Kubernetes', icon: '☸️', description: 'Orchestration Grid', color: 'border-blue-500/20 hover:border-blue-500/60' },
+        { name: 'GitHub Actions', icon: '🔧', description: 'CI/CD Pipelines', color: 'border-purple-500/20 hover:border-purple-500/60' },
+        { name: 'Linux', icon: '🐧', description: 'Core OS Systems', color: 'border-yellow-500/20 hover:border-yellow-500/60' },
       ],
     },
   ];
 
   return (
-    <section id="tech-stack" className="py-20 lg:py-32 relative">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="tech-stack" className="py-20 lg:py-32 relative overflow-hidden">
+      {/* Visual background layers */}
+      <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[130px] pointer-events-none select-none"></div>
+      <div className="absolute bottom-1/3 right-1/4 w-[350px] h-[350px] bg-secondary/5 rounded-full blur-[110px] pointer-events-none select-none"></div>
+
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
+        {/* Title Header */}
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 30 }}
@@ -61,11 +66,11 @@ export const TechStack = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <div className="inline-block glass px-4 py-2 rounded-full mb-4">
-            <span className="text-sm font-medium text-primary">Technology Stack</span>
+          <div className="inline-block glass px-4 py-2 rounded-full mb-4 border-primary/20 animate-pulse-glow-blue">
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Technology Stack</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
-            Our <span className="gradient-text">Tech Arsenal</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
+            Our Tech <span className="gradient-text glow-text">Arsenal</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             We leverage the latest and most powerful technologies to build robust, 
@@ -73,31 +78,40 @@ export const TechStack = () => {
           </p>
         </motion.div>
 
-        <div className="space-y-12">
+        {/* Categories of Stack */}
+        <div className="space-y-16">
           {techCategories.map((category, catIndex) => (
             <motion.div
               key={category.category}
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: catIndex * 0.2 }}
+              transition={{ duration: 0.6, delay: catIndex * 0.12 }}
+              className="space-y-6"
             >
-              <h3 className="text-2xl font-bold mb-6 text-center lg:text-left">
-                <span className="text-primary">//</span> {category.category}
+              <h3 className="text-2xl font-bold flex items-center gap-3 text-center sm:text-left">
+                <span className="text-primary font-mono text-xl select-none">//</span> 
+                <span className="text-foreground tracking-tight">{category.category}</span>
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
                 {category.technologies.map((tech, techIndex) => (
                   <motion.div
                     key={tech.name}
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
                     animate={inView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ duration: 0.4, delay: catIndex * 0.2 + techIndex * 0.1 }}
-                    className="glass p-6 rounded-2xl text-center hover:scale-105 hover:glow-border transition-all group cursor-pointer"
+                    transition={{ duration: 0.4, delay: catIndex * 0.1 + techIndex * 0.05 }}
+                    className={`glass p-6 rounded-2xl text-center hover:scale-105 border transition-all duration-300 group cursor-pointer ${tech.color}`}
                   >
-                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                    {/* Floating Tech Icon */}
+                    <div className="text-4xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 select-none">
                       {tech.icon}
                     </div>
-                    <h4 className="font-semibold mb-1 text-sm">{tech.name}</h4>
-                    <p className="text-xs text-muted-foreground">{tech.description}</p>
+                    <h4 className="font-extrabold text-foreground mb-1 text-sm tracking-wide">
+                      {tech.name}
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground group-hover:text-foreground/90 transition-colors">
+                      {tech.description}
+                    </p>
                   </motion.div>
                 ))}
               </div>
@@ -105,22 +119,48 @@ export const TechStack = () => {
           ))}
         </div>
 
+        {/* Creative Code Sandbox Mockup */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="mt-16 text-center"
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="mt-20 max-w-3xl mx-auto"
         >
-          <div className="glass p-8 rounded-2xl max-w-4xl mx-auto">
-            <p className="text-lg text-muted-foreground">
-              <span className="text-primary font-mono">const expertise = </span>
-              <span className="text-foreground font-semibold">"Continuous Learning"</span>
-              <span className="text-primary font-mono">;</span>
-              <br />
-              <span className="text-sm mt-2 block">
-                We stay ahead of the curve by constantly exploring and mastering emerging technologies.
-              </span>
+          {/* Terminal Mockup Header */}
+          <div className="w-full glass rounded-t-2xl border-b border-muted/30 px-5 py-3 flex items-center justify-between">
+            <div className="flex gap-2">
+              <span className="w-3 h-3 rounded-full bg-red-500/70 inline-block"></span>
+              <span className="w-3 h-3 rounded-full bg-yellow-500/70 inline-block"></span>
+              <span className="w-3 h-3 rounded-full bg-green-500/70 inline-block"></span>
+            </div>
+            <span className="text-xs text-muted-foreground font-mono">zettaweb_sandbox.js</span>
+            <div className="w-12"></div>
+          </div>
+          
+          {/* Terminal Mockup Body */}
+          <div className="w-full glass rounded-b-2xl p-6 font-mono text-sm leading-relaxed border-t-0 shadow-2xl bg-black/60">
+            <p className="text-muted-foreground">// Setting up the team core expertise</p>
+            <p>
+              <span className="text-purple-400">const</span> <span className="text-blue-400">zettawebStack</span> = {'{'}
             </p>
+            <p className="pl-4">
+              <span className="text-red-400">development</span>: <span className="text-yellow-300">"Modern Web, Android, iOS"</span>,
+            </p>
+            <p className="pl-4">
+              <span className="text-red-400">intelligence</span>: <span className="text-yellow-300">"Custom LLMs & Neural Analytics"</span>,
+            </p>
+            <p className="pl-4">
+              <span className="text-red-400">performance</span>: <span className="text-yellow-300">"60fps Animations & Heavy Optimizations"</span>,
+            </p>
+            <p className="pl-4">
+              <span className="text-red-400">philosophy</span>: <span className="text-yellow-300">"Continuous learning, zero lag"</span>
+            </p>
+            <p>{'};'}</p>
+            <br />
+            <p>
+              <span className="text-green-400">console</span>.<span className="text-blue-400">log</span>(<span className="text-blue-400">zettawebStack</span>.<span className="text-red-400">philosophy</span>);
+            </p>
+            <p className="text-yellow-400 font-bold mt-2">&gt; "Continuous learning, zero lag"</p>
           </div>
         </motion.div>
       </div>

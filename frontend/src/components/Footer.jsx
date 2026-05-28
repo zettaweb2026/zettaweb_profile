@@ -1,5 +1,6 @@
 import React from 'react';
 import { Github, Linkedin, Twitter, Mail, Heart } from 'lucide-react';
+import { toast } from 'sonner';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -29,43 +30,66 @@ export const Footer = () => {
     { icon: Linkedin, href: '#', label: 'LinkedIn' },
     { icon: Github, href: '#', label: 'GitHub' },
     { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Mail, href: 'mailto:hello@wenexa.com', label: 'Email' },
+    { icon: Mail, href: 'mailto:hello@zettaweb.com', label: 'Email' },
   ];
 
   const scrollToSection = (e, href) => {
     e.preventDefault();
+    if (href === '#') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     const element = document.querySelector(href);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const offset = 80;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   };
 
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    toast.success('Successfully subscribed to Zettaweb Newsletter!');
+  };
+
   return (
-    <footer className="relative z-10 bg-card/50 border-t border-border mt-20">
+    <footer className="relative z-10 glass border-t border-primary/20 mt-20">
       <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
-          {/* Brand Section */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center space-x-3 mb-4">
-              <img 
-                src="https://customer-assets.emergentagent.com/job_code-visionaries-1/artifacts/jdapv0xo_Gemini_Generated_Image_fy9u51fy9u51fy9u.png" 
-                alt="WENEXA Logo" 
-                className="h-10 w-10 object-contain"
-              />
-              <span className="text-2xl font-bold gradient-text">WENEXA</span>
+          {/* Brand & Socials Section */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center space-x-3 select-none">
+              <div className="overflow-hidden rounded-xl border border-primary/20 p-1 bg-background/50">
+                <img 
+                  src="/logo.png" 
+                  alt="Zettaweb Logo" 
+                  className="h-10 w-10 object-contain rounded-lg"
+                />
+              </div>
+              <span className="text-2xl font-black tracking-tight gradient-text glow-text">Zettaweb</span>
             </div>
-            <p className="text-muted-foreground mb-6 leading-relaxed max-w-sm">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-sm">
               Building innovative digital solutions that transform businesses and shape the future of technology.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-3 select-none">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
                   <a
                     key={social.label}
                     href={social.href}
+                    onClick={(e) => {
+                      if (social.href === '#') e.preventDefault();
+                    }}
                     aria-label={social.label}
-                    className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:bg-primary/20 transition-colors group"
+                    className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:border-primary/45 transition-colors group"
                   >
                     <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                   </a>
@@ -74,17 +98,17 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* Footer Links */}
+          {/* Nav Categories */}
           {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h3 className="font-semibold text-foreground mb-4">{category}</h3>
-              <ul className="space-y-3">
+            <div key={category} className="space-y-4">
+              <h3 className="font-extrabold text-sm uppercase tracking-wider text-foreground">{category}</h3>
+              <ul className="space-y-2.5">
                 {links.map((link) => (
                   <li key={link.name}>
                     <a
                       href={link.href}
                       onClick={(e) => scrollToSection(e, link.href)}
-                      className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-300"
                     >
                       {link.name}
                     </a>
@@ -95,40 +119,45 @@ export const Footer = () => {
           ))}
         </div>
 
-        {/* Newsletter Section */}
-        <div className="mt-12 pt-8 border-t border-border">
+        {/* Newsletter Box */}
+        <div className="mt-12 pt-8 border-t border-muted/30">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div className="text-center lg:text-left">
-              <h3 className="font-semibold text-lg mb-2">Stay Updated</h3>
+            <div className="text-center lg:text-left space-y-1">
+              <h3 className="font-bold text-lg text-foreground">Stay Updated</h3>
               <p className="text-sm text-muted-foreground">
                 Subscribe to our newsletter for the latest tech insights and updates.
               </p>
             </div>
-            <div className="flex gap-2 w-full lg:w-auto">
+            <form onSubmit={handleSubscribe} className="flex gap-2 w-full lg:w-auto">
               <input
                 type="email"
+                required
                 placeholder="Enter your email"
-                className="px-4 py-2 glass rounded-lg border border-primary/30 focus:border-primary outline-none text-sm flex-1 lg:w-64"
+                className="px-4 py-3 glass rounded-xl border border-muted/30 focus:border-primary/70 focus:ring-0 outline-none text-xs sm:text-sm flex-1 lg:w-64 bg-background/30 transition-all"
               />
-              <button className="px-6 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium text-sm transition-colors">
+              <button 
+                type="submit"
+                className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md"
+              >
                 Subscribe
               </button>
-            </div>
+            </form>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-border">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-            <p className="flex items-center gap-2">
-              © {currentYear} WENEXA. All rights reserved. Made with{' '}
-              <Heart className="w-4 h-4 text-primary fill-primary inline" /> by WENEXA Team
+        {/* Bottom copyright / policies bar */}
+        <div className="mt-12 pt-8 border-t border-muted/30">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-muted-foreground">
+            <p className="flex items-center gap-1.5 flex-wrap justify-center">
+              <span>&copy; {currentYear} Zettaweb. All rights reserved. Made with</span>
+              <Heart className="w-3.5 h-3.5 text-primary fill-primary inline animate-pulse" />
+              <span>by Zettaweb Team</span>
             </p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-primary transition-colors">
+            <div className="flex gap-6 select-none">
+              <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-primary transition-colors">
                 Privacy Policy
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-primary transition-colors">
                 Terms of Service
               </a>
             </div>

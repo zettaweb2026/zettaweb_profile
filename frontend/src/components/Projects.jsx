@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ExternalLink, Github, Filter } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
+import { toast } from 'sonner';
 
 export const Projects = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0.08,
   });
 
   const [activeFilter, setActiveFilter] = useState('All');
+
+  const handleLinkClick = (e, link, label, projectTitle) => {
+    e.preventDefault();
+    if (!link || link === '#') {
+      toast.info(`${label} for "${projectTitle}" is coming soon!`);
+    } else {
+      window.open(link, '_blank');
+    }
+  };
 
   const projects = [
     {
@@ -79,8 +89,13 @@ export const Projects = () => {
       : projects.filter((project) => project.category === activeFilter);
 
   return (
-    <section id="projects" className="py-20 lg:py-32 relative">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="projects" className="py-20 lg:py-32 relative overflow-hidden">
+      {/* Background radial overlays */}
+      <div className="absolute top-1/4 left-10 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px] pointer-events-none select-none"></div>
+      <div className="absolute bottom-1/4 right-10 w-[350px] h-[350px] bg-secondary/5 rounded-full blur-[120px] pointer-events-none select-none"></div>
+
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
+        {/* Title Header */}
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 30 }}
@@ -88,109 +103,135 @@ export const Projects = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <div className="inline-block glass px-4 py-2 rounded-full mb-4">
-            <span className="text-sm font-medium text-primary">Portfolio</span>
+          <div className="inline-block glass px-4 py-2 rounded-full mb-4 border-primary/20 animate-pulse-glow-blue">
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Portfolio</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
-            Featured <span className="gradient-text">Projects</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
+            Featured <span className="gradient-text glow-text">Projects</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Explore our portfolio of successful projects that showcase our expertise and commitment to excellence.
           </p>
         </motion.div>
 
-        {/* Filter Buttons */}
+        {/* Filter Buttons Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
+          className="flex flex-wrap items-center justify-center gap-3 mb-16"
         >
-          <Filter className="w-5 h-5 text-primary self-center" />
-          {filters.map((filter) => (
-            <Button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              variant="outline"
-              className={`${
-                activeFilter === filter
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'glass border-primary/30 hover:bg-primary/10'
-              }`}
-            >
-              {filter}
-            </Button>
-          ))}
+          <div className="flex items-center gap-2 mr-2">
+            <Filter className="w-4 h-4 text-primary" />
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Filter:</span>
+          </div>
+          
+          <div className="flex flex-wrap p-1.5 glass rounded-2xl border border-muted/20">
+            {filters.map((filter) => {
+              const isActive = activeFilter === filter;
+              return (
+                <button
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`relative px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors duration-300 rounded-xl ${
+                    isActive ? 'text-primary-foreground font-black' : 'text-foreground/70 hover:text-foreground'
+                  }`}
+                >
+                  <span className="relative z-10">{filter}</span>
+                  {/* Glowing layout slide indicator */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeFilterPill"
+                      transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                      className="absolute inset-0 bg-primary rounded-xl shadow-[0_0_15px_#3fa7e6] z-0"
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </motion.div>
 
-        {/* Projects Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project, index) => (
-            <motion.div
-              key={project.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-              layout
-            >
-              <Card className="glass overflow-hidden h-full hover:scale-105 transition-all group flex flex-col">
-                {/* Project Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
-                  <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground">
-                    {project.category}
-                  </Badge>
-                </div>
+        {/* Projects Cards Grid */}
+        <motion.div 
+          layout 
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project, index) => (
+              <motion.div
+                key={project.title}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, y: 15 }}
+                transition={{ duration: 0.45 }}
+                className="h-full"
+              >
+                <Card className="glass-card overflow-hidden h-full flex flex-col justify-between group rounded-3xl border-muted/20 hover:border-primary/30">
+                  <div>
+                    {/* Project Header Image */}
+                    <div className="relative h-52 overflow-hidden select-none">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-95"></div>
+                      <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground border-none font-bold text-[10px] tracking-widest uppercase">
+                        {project.category}
+                      </Badge>
+                    </div>
 
-                {/* Project Content */}
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-semibold mb-3">{project.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                    {project.description}
-                  </p>
+                    {/* Content Section */}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                        {project.title}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed">
+                        {project.description}
+                      </p>
 
-                  {/* Technologies */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="text-xs px-3 py-1 bg-primary/10 text-primary rounded-full"
-                      >
-                        {tech}
-                      </span>
-                    ))}
+                      {/* Technologies Chips */}
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {project.technologies.map((tech) => (
+                          <span
+                            key={tech}
+                            className="text-[10px] font-mono font-medium px-2.5 py-0.5 bg-primary/10 text-primary rounded-full border border-primary/10"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-3 mt-auto">
+                  <div className="px-6 pb-6 pt-3 flex gap-3">
                     <Button
                       size="sm"
-                      className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
-                      onClick={() => window.open(project.demoLink, '_blank')}
+                      className="flex-grow bg-primary hover:bg-primary/95 text-primary-foreground font-bold rounded-xl shadow-md border-none flex items-center justify-center gap-1.5"
+                      onClick={(e) => handleLinkClick(e, project.demoLink, 'Interactive demo', project.title)}
                     >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Demo
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Demo</span>
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="flex-1 glass border-primary/30"
-                      onClick={() => window.open(project.githubLink, '_blank')}
+                      className="flex-grow glass border-primary/20 hover:bg-primary/5 rounded-xl font-bold flex items-center justify-center gap-1.5"
+                      onClick={(e) => handleLinkClick(e, project.githubLink, 'Source code', project.title)}
                     >
-                      <Github className="w-4 h-4 mr-2" />
-                      Code
+                      <Github className="w-3.5 h-3.5" />
+                      <span>Code</span>
                     </Button>
                   </div>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                </Card>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );
