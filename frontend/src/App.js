@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -11,7 +12,27 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ParticleBackground from './components/ParticleBackground';
 import WhatsAppButton from './components/WhatsAppButton';
+import AdminPanel from './components/AdminPanel';
 import './index.css';
+
+const Home = () => (
+  <>
+    <ParticleBackground />
+    <Navbar />
+    <main className="relative z-10">
+      <Hero />
+      <About />
+      <Services />
+      <TechStack />
+      <Projects />
+      <WhyChooseUs />
+      <Testimonials />
+      <Contact />
+    </main>
+    <Footer />
+    <WhatsAppButton />
+  </>
+);
 
 const App = () => {
   useEffect(() => {
@@ -20,22 +41,14 @@ const App = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
-      <ParticleBackground />
-      <Navbar />
-      <main className="relative z-10">
-        <Hero />
-        <About />
-        <Services />
-        <TechStack />
-        <Projects />
-        <WhyChooseUs />
-        <Testimonials />
-        <Contact />
-      </main>
-      <Footer />
-      <WhatsAppButton />
-    </div>
+    <Router>
+      <div className="relative min-h-screen bg-background text-foreground">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<AdminPanel />} />
+        </Routes>
+      </div>
+    </Router>
   );
 };
 

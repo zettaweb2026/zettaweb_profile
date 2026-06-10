@@ -8,48 +8,25 @@ export const TechStack = () => {
     threshold: 0.08,
   });
 
-  const techCategories = [
-    {
-      category: 'Frontend Development',
-      technologies: [
-        { name: 'React', icon: '⚛️', description: 'UI Library', color: 'border-primary/20 hover:border-primary/60 hover:shadow-[0_0_20px_rgba(63,167,230,0.15)]' },
-        { name: 'Next.js', icon: '▲', description: 'React Framework', color: 'border-foreground/20 hover:border-foreground/60 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]' },
-        { name: 'Vue.js', icon: '🖖', description: 'Progressive Framework', color: 'border-green-500/20 hover:border-green-500/60 hover:shadow-[0_0_20px_rgba(34,197,94,0.15)]' },
-        { name: 'TypeScript', icon: 'TS', description: 'Type Safety', color: 'border-primary/25 hover:border-primary/70 hover:shadow-[0_0_20px_rgba(63,167,230,0.2)]' },
-        { name: 'Tailwind CSS', icon: '🎨', description: 'CSS Utility Framework', color: 'border-cyan-400/20 hover:border-cyan-400/60 hover:shadow-[0_0_20px_rgba(34,211,238,0.15)]' },
-      ],
-    },
-    {
-      category: 'Backend & APIs',
-      technologies: [
-        { name: 'Node.js', icon: '🟢', description: 'JS Runtime', color: 'border-green-500/20 hover:border-green-500/60 hover:shadow-[0_0_20px_rgba(34,197,94,0.15)]' },
-        { name: 'Python', icon: '🐍', description: 'General Purpose Language', color: 'border-secondary/20 hover:border-secondary/60 hover:shadow-[0_0_20px_rgba(243,191,74,0.15)]' },
-        { name: 'Express', icon: 'EX', description: 'Minimalist Framework', color: 'border-foreground/25 hover:border-foreground/60' },
-        { name: 'FastAPI', icon: '⚡', description: 'Python Framework', color: 'border-green-400/20 hover:border-green-400/60' },
-        { name: 'GraphQL', icon: '⬢', description: 'API Query Language', color: 'border-pink-500/20 hover:border-pink-500/60 hover:shadow-[0_0_20px_rgba(236,72,153,0.15)]' },
-      ],
-    },
-    {
-      category: 'Artificial Intelligence & ML',
-      technologies: [
-        { name: 'TensorFlow', icon: '🧠', description: 'ML Ecosystem', color: 'border-orange-500/20 hover:border-orange-500/60 hover:shadow-[0_0_20px_rgba(249,115,22,0.15)]' },
-        { name: 'PyTorch', icon: '🔥', description: 'Deep Learning', color: 'border-red-500/20 hover:border-red-500/60 hover:shadow-[0_0_20px_rgba(239,68,68,0.15)]' },
-        { name: 'OpenAI', icon: '🤖', description: 'AI Models APIs', color: 'border-teal-500/25 hover:border-teal-500/60 hover:shadow-[0_0_20px_rgba(20,184,166,0.15)]' },
-        { name: 'Scikit-learn', icon: '📊', description: 'Data Analytics', color: 'border-primary/20 hover:border-primary/50' },
-        { name: 'Hugging Face', icon: '🤗', description: 'NLP & Transformers', color: 'border-yellow-400/20 hover:border-yellow-400/60' },
-      ],
-    },
-    {
-      category: 'Cloud & Infrastructure',
-      technologies: [
-        { name: 'AWS', icon: '☁️', description: 'Cloud Provider', color: 'border-orange-400/20 hover:border-orange-400/60 hover:shadow-[0_0_20px_rgba(251,146,60,0.15)]' },
-        { name: 'Docker', icon: '🐳', description: 'Containers', color: 'border-blue-400/25 hover:border-blue-400/60 hover:shadow-[0_0_20px_rgba(96,165,250,0.15)]' },
-        { name: 'Kubernetes', icon: '☸️', description: 'Orchestration Grid', color: 'border-blue-500/20 hover:border-blue-500/60' },
-        { name: 'GitHub Actions', icon: '🔧', description: 'CI/CD Pipelines', color: 'border-purple-500/20 hover:border-purple-500/60' },
-        { name: 'Linux', icon: '🐧', description: 'Core OS Systems', color: 'border-yellow-500/20 hover:border-yellow-500/60' },
-      ],
-    },
-  ];
+  const [techCategories, setTechCategories] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchTechStack = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/techStack`);
+        const data = await response.json();
+        setTechCategories(data);
+      } catch (error) {
+        console.error('Failed to fetch tech stack:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTechStack();
+  }, []);
+
+  if (loading || techCategories.length === 0) return null;
 
   return (
     <section id="tech-stack" className="py-20 lg:py-32 relative overflow-hidden">

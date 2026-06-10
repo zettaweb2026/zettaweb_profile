@@ -24,62 +24,23 @@ export const Projects = () => {
     }
   };
 
-  const projects = [
-    {
-      title: 'E-Commerce Platform',
-      category: 'Web',
-      description: 'Full-featured online shopping platform with payment integration, inventory management, and admin dashboard.',
-      image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=800&q=80',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-      demoLink: '#',
-      githubLink: '#',
-    },
-    {
-      title: 'AI Chatbot Assistant',
-      category: 'AI',
-      description: 'Intelligent conversational AI powered by GPT-4, capable of understanding context and providing helpful responses.',
-      image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
-      technologies: ['Python', 'OpenAI', 'FastAPI', 'React'],
-      demoLink: '#',
-      githubLink: '#',
-    },
-    {
-      title: 'Task Automation Suite',
-      category: 'Automation',
-      description: 'Custom automation tools for business workflows, data processing, and report generation.',
-      image: 'https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?w=800&q=80',
-      technologies: ['Python', 'Selenium', 'Pandas', 'Docker'],
-      demoLink: '#',
-      githubLink: '#',
-    },
-    {
-      title: 'Healthcare Management App',
-      category: 'Web',
-      description: 'Patient management system with appointment scheduling, medical records, and telemedicine features.',
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80',
-      technologies: ['Next.js', 'PostgreSQL', 'WebRTC', 'AWS'],
-      demoLink: '#',
-      githubLink: '#',
-    },
-    {
-      title: 'Real-time Analytics Dashboard',
-      category: 'Web',
-      description: 'Interactive dashboard with real-time data visualization, custom reports, and predictive analytics.',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
-      technologies: ['React', 'D3.js', 'WebSocket', 'Redis'],
-      demoLink: '#',
-      githubLink: '#',
-    },
-    {
-      title: 'Image Recognition System',
-      category: 'AI',
-      description: 'Computer vision solution for object detection, classification, and facial recognition.',
-      image: 'https://images.unsplash.com/photo-1555255707-c07966088b7b?w=800&q=80',
-      technologies: ['TensorFlow', 'Python', 'OpenCV', 'Flask'],
-      demoLink: '#',
-      githubLink: '#',
-    },
-  ];
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/projects`);
+        const data = await response.json();
+        setProjects(data);
+      } catch (error) {
+        console.error('Failed to fetch projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const filters = ['All', 'Web', 'AI', 'Automation'];
 

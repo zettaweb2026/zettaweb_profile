@@ -15,48 +15,25 @@ export const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0); // -1 for left, 1 for right
 
-  const testimonials = [
-    {
-      name: 'Sarah Johnson',
-      role: 'CEO, TechStart Inc.',
-      avatar: 'SJ',
-      rating: 5,
-      feedback:
-        'Zettaweb transformed our digital presence completely. Their team delivered a stunning website that increased our conversions by 250%. Professional, creative, and always on time!',
-    },
-    {
-      name: 'Michael Chen',
-      role: 'CTO, DataFlow Systems',
-      avatar: 'MC',
-      rating: 5,
-      feedback:
-        'Working with Zettaweb on our AI project was exceptional. They understood our complex requirements and delivered a solution that exceeded expectations. Highly recommended!',
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'Founder, HealthCare Plus',
-      avatar: 'ER',
-      rating: 5,
-      feedback:
-        'The mobile app Zettaweb built for us is incredible. Our patients love the interface, and the backend is rock solid. They truly care about their clients\' success.',
-    },
-    {
-      name: 'David Park',
-      role: 'Director, FinTech Solutions',
-      avatar: 'DP',
-      rating: 5,
-      feedback:
-        'Security was our top priority, and Zettaweb delivered. Their expertise in cybersecurity and cloud infrastructure gave us peace of mind. Outstanding work!',
-    },
-    {
-      name: 'Lisa Anderson',
-      role: 'Marketing Head, EcomGrowth',
-      avatar: 'LA',
-      rating: 5,
-      feedback:
-        'From concept to launch, Zettaweb was with us every step. The e-commerce platform they built is fast, beautiful, and drives sales. Best investment we made!',
-    },
-  ];
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/testimonials`);
+        const data = await response.json();
+        setTestimonials(data);
+      } catch (error) {
+        console.error('Failed to fetch testimonials:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTestimonials();
+  }, []);
+
+  if (loading || testimonials.length === 0) return null;
 
   const slideVariants = {
     enter: (dir) => ({

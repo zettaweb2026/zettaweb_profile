@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Target, Eye, Award, Users, Shield, Zap } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { Card } from './ui/card';
 
 export const About = () => {
@@ -10,44 +10,33 @@ export const About = () => {
     threshold: 0.08,
   });
 
-  const values = [
-    {
-      icon: Zap,
-      title: 'Innovation',
-      description: 'Pushing boundaries with cutting-edge technologies and creative solutions.',
-      color: 'text-primary',
-      bgColor: 'bg-primary/10',
-    },
-    {
-      icon: Award,
-      title: 'Reliability',
-      description: 'Delivering consistent quality and dependable results on every single deployment.',
-      color: 'text-secondary',
-      bgColor: 'bg-secondary/10',
-    },
-    {
-      icon: Users,
-      title: 'Scalability',
-      description: 'Building solutions engineered to grow side-by-side with your business demands.',
-      color: 'text-primary',
-      bgColor: 'bg-primary/10',
-    },
-    {
-      icon: Shield,
-      title: 'Security',
-      description: 'Implementing ironclad security standards to protect your vital digital assets.',
-      color: 'text-secondary',
-      bgColor: 'bg-secondary/10',
-    },
-  ];
+  const [values, setValues] = React.useState([]);
+  const [timeline, setTimeline] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const timeline = [
-    { year: '2020', event: 'Zettaweb Founded', description: 'Started with a vision to transform digital experiences.' },
-    { year: '2021', event: 'First Major Client', description: 'Delivered enterprise-level cloud integrations.' },
-    { year: '2022', event: 'Expanded Services', description: 'Added advanced AI/ML models to our solutions portfolio.' },
-    { year: '2023', event: '100+ Projects Milestone', description: 'Reaching over a hundred successful client launches worldwide.' },
-    { year: '2024', event: 'Innovation Hub', description: 'Established a dedicated R&D division for emerging web3 and neural architectures.' },
-  ];
+  React.useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        const [valuesRes, timelineRes] = await Promise.all([
+          fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/aboutValues`),
+          fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/aboutTimeline`)
+        ]);
+        const [valuesData, timelineData] = await Promise.all([
+          valuesRes.json(),
+          timelineRes.json()
+        ]);
+        setValues(valuesData);
+        setTimeline(timelineData);
+      } catch (error) {
+        console.error('Failed to fetch about data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAboutData();
+  }, []);
+
+  if (loading || values.length === 0 || timeline.length === 0) return null;
 
   return (
     <section id="about" className="py-20 lg:py-32 relative overflow-hidden">
@@ -88,7 +77,7 @@ export const About = () => {
             <Card className="glass p-8 h-full rounded-3xl border-primary/20 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(63,167,230,0.15)] flex flex-col justify-between group">
               <div>
                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
-                  <Target className="w-8 h-8 text-primary" />
+                  <LucideIcons.Target className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground group-hover:text-primary transition-colors">Our Mission</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
@@ -112,7 +101,7 @@ export const About = () => {
             <Card className="glass p-8 h-full rounded-3xl border-secondary/20 hover:border-secondary/50 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(243,191,74,0.15)] flex flex-col justify-between group">
               <div>
                 <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-secondary/20 transition-all duration-300">
-                  <Eye className="w-8 h-8 text-secondary" />
+                  <LucideIcons.Eye className="w-8 h-8 text-secondary" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground group-hover:text-secondary transition-colors">Our Vision</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
@@ -141,7 +130,7 @@ export const About = () => {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => {
-              const Icon = value.icon;
+              const Icon = LucideIcons[value.icon] || LucideIcons.HelpCircle;
               return (
                 <motion.div
                   key={value.title}

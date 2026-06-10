@@ -1,21 +1,12 @@
 import React from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { 
-  Globe, 
-  Smartphone, 
-  Brain, 
-  Zap, 
-  Cloud, 
-  Shield, 
-  Palette, 
-  Settings 
-} from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { Button } from './ui/button';
 
 // Inner component for custom mouse-track 3D Tilt Card
 const ServiceCard = ({ service, index }) => {
-  const Icon = service.icon;
+  const Icon = LucideIcons[service.icon] || LucideIcons.HelpCircle;
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -94,64 +85,25 @@ export const Services = () => {
     threshold: 0.05,
   });
 
-  const services = [
-    {
-      icon: Globe,
-      title: 'Web Development',
-      description: 'Modern, responsive websites built with cutting-edge frameworks like React, Next.js, and Node.',
-      technologies: ['React', 'Next.js', 'Node.js', 'TypeScript'],
-      benefits: 'Fast, SEO-optimized, scalable web apps',
-    },
-    {
-      icon: Smartphone,
-      title: 'App Development',
-      description: 'Native and cross-platform mobile applications for iOS and Android devices.',
-      technologies: ['React Native', 'Flutter', 'Swift', 'Kotlin'],
-      benefits: 'High performance native capabilities',
-    },
-    {
-      icon: Brain,
-      title: 'AI / ML Solutions',
-      description: 'Intelligent systems powered by neural networks, LLM integrations, and machine learning.',
-      technologies: ['TensorFlow', 'PyTorch', 'OpenAI', 'Scikit-learn'],
-      benefits: 'Automated workflow intelligence',
-    },
-    {
-      icon: Zap,
-      title: 'Automation Tools',
-      description: 'Custom automation tools and web scraping systems to streamline business operations.',
-      technologies: ['Python', 'Selenium', 'Zapier', 'N8N'],
-      benefits: 'Increase efficiency, drop manual work',
-    },
-    {
-      icon: Cloud,
-      title: 'Cloud & DevOps',
-      description: 'Cloud infrastructure setup, containers deployments, and unified continuous integration.',
-      technologies: ['AWS', 'Azure', 'Docker', 'Kubernetes'],
-      benefits: '99.9% uptime, auto-scaling grids',
-    },
-    {
-      icon: Shield,
-      title: 'Cybersecurity',
-      description: 'Robust security audits, penetration testing and high-standard compliance implementations.',
-      technologies: ['Penetration Testing', 'Security Audits', 'Encryption'],
-      benefits: 'Ironclad security and complete trust',
-    },
-    {
-      icon: Palette,
-      title: 'UI/UX Design',
-      description: 'Stunning design mockups, wireframes, and interactive customer journeys.',
-      technologies: ['Figma', 'Adobe XD', 'Sketch', 'Prototyping'],
-      benefits: 'High user retention and wow factors',
-    },
-    {
-      icon: Settings,
-      title: 'Custom Software',
-      description: 'Bespoke software systems customized for your enterprise operations.',
-      technologies: ['Full Stack', 'API Development', 'Database Design'],
-      benefits: 'Fully custom solutions built to scale',
-    },
-  ];
+  const [services, setServices] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/services`);
+        const data = await response.json();
+        setServices(data);
+      } catch (error) {
+        console.error('Failed to fetch services:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchServices();
+  }, []);
+
+  if (loading || services.length === 0) return null;
 
   const scrollToContact = () => {
     const element = document.querySelector('#contact');
