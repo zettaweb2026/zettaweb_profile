@@ -45,7 +45,7 @@ const App = () => {
       <div className="relative min-h-screen bg-background text-foreground">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<AdminPanel />} />
+          {/* <Route path="/admin" element={<AdminPanel />} /> */}
         </Routes>
       </div>
     </Router>
