@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 
@@ -13,23 +13,23 @@ const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('projects');
   const [editingItem, setEditingItem] = useState(null);
 
-  const fetchData = async (resource, setter) => {
+  const fetchData = useCallback(async (resource, setter) => {
     const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}`);
     setter(await res.json());
-  };
+  }, []);
 
-  const loadAllData = () => {
+  const loadAllData = useCallback(() => {
     fetchData('projects', setProjects);
     fetchData('testimonials', setTestimonials);
     fetchData('services', setServices);
     fetchData('techStack', setTechStack);
     fetchData('aboutValues', setAboutValues);
     fetchData('aboutTimeline', setAboutTimeline);
-  };
+  }, [fetchData]);
 
   useEffect(() => {
     loadAllData();
-  }, []);
+  }, [loadAllData]);
 
   const handleDelete = async (resource, id) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
