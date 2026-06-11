@@ -28,7 +28,7 @@ export const Footer = () => {
 
   const socialLinks = [
     { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Github, href: '#', label: 'GitHub' },
+    { icon: Github, href: 'https://github.com/zettaweb2026', label: 'GitHub' },
     { icon: Twitter, href: '#', label: 'Twitter' },
     { icon: Mail, href: 'mailto:hello@zettaweb.com', label: 'Email' },
   ];

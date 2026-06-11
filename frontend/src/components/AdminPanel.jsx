@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
+import { clearAuthSession, getAuthHeaders, getStoredUser, parseApiResponse } from '../lib/auth';
 
 const AdminPanel = () => {
+  const navigate = useNavigate();
+  const currentUser = getStoredUser();
   const [projects, setProjects] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [services, setServices] = useState([]);
@@ -12,6 +16,7 @@ const AdminPanel = () => {
   
   const [activeTab, setActiveTab] = useState('projects');
   const [editingItem, setEditingItem] = useState(null);
+  const [error, setError] = useState('');
 
   const fetchData = useCallback(async (resource, setter) => {
     const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}`);
@@ -31,9 +36,34 @@ const AdminPanel = () => {
     loadAllData();
   }, [loadAllData]);
 
+  const handleUnauthorized = (message) => {
+    setError(message || 'Access denied');
+
+    if (message === 'Authentication required' || message === 'Invalid or expired token') {
+      clearAuthSession();
+      navigate('/admin/login', { replace: true });
+    }
+  };
+
+  const handleLogout = () => {
+    clearAuthSession();
+    navigate('/admin/login', { replace: true });
+  };
+
   const handleDelete = async (resource, id) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
-      await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+
+      try {
+        await parseApiResponse(response);
+      } catch (requestError) {
+        handleUnauthorized(requestError.message);
+        return;
+      }
+
       loadAllData();
     }
   };
@@ -61,11 +91,21 @@ const AdminPanel = () => {
     const method = editingItem ? 'PUT' : 'POST';
     const url = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}${editingItem ? `/${editingItem.id}` : ''}`;
 
-    await fetch(url, {
+    const response = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
       body: JSON.stringify(data),
     });
+
+    try {
+      await parseApiResponse(response);
+    } catch (requestError) {
+      handleUnauthorized(requestError.message);
+      return;
+    }
 
     setEditingItem(null);
     loadAllData();
@@ -77,7 +117,33 @@ const AdminPanel = () => {
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
           Admin <span className="gradient-text glow-text">Dashboard</span>
         </h2>
+        <p className="text-muted-foreground">
+          Signed in as {currentUser?.name} ({currentUser?.role})
+        </p>
       </div>
+
+      <div className="mb-8 grid gap-4 md:grid-cols-4">
+        {[
+          'Manage Projects',
+          'Manage Services',
+          'Manage Contact Requests',
+          'Manage Team Members'
+        ].map((section) => (
+          <Card key={section} className="glass-card rounded-2xl border-primary/10 p-5">
+            <p className="text-sm font-semibold text-muted-foreground">{section}</p>
+          </Card>
+        ))}
+      </div>
+
+      <div className="mb-8 flex justify-end">
+        <Button variant="outline" onClick={handleLogout}>Logout</Button>
+      </div>
+
+      {error && (
+        <div className="mb-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
       <div className="flex flex-wrap justify-center gap-4 mb-8">
         {[
