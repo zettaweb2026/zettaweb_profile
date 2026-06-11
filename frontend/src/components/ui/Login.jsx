@@ -1,14 +1,19 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AlertCircle, Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
 
 import { Button } from "./button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 import { Input } from "./input";
 import { Label } from "./label";
+import { API_BASE_URL, getFriendlyErrorMessage, parseApiResponse, saveAuthSession } from "../../lib/auth";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -24,9 +29,46 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Login submitted:", formData);
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await parseApiResponse(response);
+
+      if (!data.token || !data.user) {
+        throw new Error("LOGIN_RESPONSE_INVALID");
+      }
+
+      saveAuthSession({
+        token: data.token,
+        user: data.user,
+      });
+
+      if (data.user.role !== "admin") {
+        navigate("/access-denied", { replace: true });
+        return;
+      }
+
+      const redirectTo = location.state?.from?.pathname || "/admin/dashboard";
+      navigate(redirectTo === "/admin" ? "/admin/dashboard" : redirectTo, { replace: true });
+    } catch (err) {
+      setError(getFriendlyErrorMessage(err, "Unable to login right now. Please try again."));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -60,6 +102,13 @@ const Login = () => {
 
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email address</Label>
                 <div className="relative">
@@ -118,9 +167,9 @@ const Login = () => {
                 Remember me on this device
               </label>
 
-              <Button type="submit" className="h-11 w-full rounded-xl font-bold">
+              <Button type="submit" disabled={isSubmitting} className="h-11 w-full rounded-xl font-bold">
                 <LogIn className="h-4 w-4" />
-                Login
+                {isSubmitting ? "Logging in..." : "Login"}
               </Button>
 
               <p className="text-center text-sm text-muted-foreground">

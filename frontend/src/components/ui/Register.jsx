@@ -1,15 +1,19 @@
 import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { Building2, Eye, EyeOff, Lock, Mail, UserPlus, UserRound } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { AlertCircle, Building2, Eye, EyeOff, Lock, Mail, UserPlus, UserRound } from "lucide-react";
 
 import { Button } from "./button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 import { Input } from "./input";
 import { Label } from "./label";
+import { API_BASE_URL, getFriendlyErrorMessage, parseApiResponse, saveAuthSession } from "../../lib/auth";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -32,14 +36,46 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setError("");
 
     if (passwordMismatch) {
       return;
     }
 
-    console.log("Register submitted:", formData);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await parseApiResponse(response);
+
+      if (!data.token || !data.user) {
+        throw new Error("REGISTER_RESPONSE_INVALID");
+      }
+
+      saveAuthSession({
+        token: data.token,
+        user: data.user,
+      });
+
+      navigate(data.user.role === "admin" ? "/admin/dashboard" : "/", { replace: true });
+    } catch (err) {
+      setError(getFriendlyErrorMessage(err, "Unable to create your account right now. Please try again."));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -73,6 +109,13 @@ const Register = () => {
 
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
+
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full name</Label>
@@ -190,9 +233,13 @@ const Register = () => {
                 <span>I agree to the terms, privacy policy, and project communication updates.</span>
               </label>
 
-              <Button type="submit" disabled={passwordMismatch} className="h-11 w-full rounded-xl font-bold">
+              <Button
+                type="submit"
+                disabled={Boolean(passwordMismatch) || isSubmitting}
+                className="h-11 w-full rounded-xl font-bold"
+              >
                 <UserPlus className="h-4 w-4" />
-                Register
+                {isSubmitting ? "Creating account..." : "Register"}
               </Button>
 
               <p className="text-center text-sm text-muted-foreground">
