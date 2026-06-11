@@ -14,6 +14,8 @@ import ParticleBackground from './components/ParticleBackground';
 import WhatsAppButton from './components/WhatsAppButton';
 import AdminPanel from './components/AdminPanel';
 import './index.css';
+import Login from './components/ui/Login';
+import Register from './components/ui/Register';
 
 const Home = () => (
   <>
@@ -46,6 +48,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
         </Routes>
       </div>
     </Router>
