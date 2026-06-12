@@ -79,6 +79,8 @@ const ServiceCard = ({ service, index }) => {
   );
 };
 
+import { fallbackServices } from '../lib/fallbackData';
+
 export const Services = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -93,9 +95,14 @@ export const Services = () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/services`);
         const data = await response.json();
-        setServices(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setServices(data);
+        } else {
+          setServices(fallbackServices);
+        }
       } catch (error) {
-        console.error('Failed to fetch services:', error);
+        console.error('Failed to fetch services, using frontend fallback:', error);
+        setServices(fallbackServices);
       } finally {
         setLoading(false);
       }

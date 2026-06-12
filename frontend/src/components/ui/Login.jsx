@@ -171,13 +171,6 @@ const Login = () => {
                 <LogIn className="h-4 w-4" />
                 {isSubmitting ? "Logging in..." : "Login"}
               </Button>
-
-              <p className="text-center text-sm text-muted-foreground">
-                Do not have an account?{" "}
-                <Link to="/register" className="font-semibold text-primary hover:underline">
-                  Register
-                </Link>
-              </p>
             </form>
           </CardContent>
         </Card>

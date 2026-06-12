@@ -6,6 +6,8 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
 
+import { fallbackTestimonials } from '../lib/fallbackData';
+
 export const Testimonials = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -23,9 +25,14 @@ export const Testimonials = () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/testimonials`);
         const data = await response.json();
-        setTestimonials(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setTestimonials(data);
+        } else {
+          setTestimonials(fallbackTestimonials);
+        }
       } catch (error) {
-        console.error('Failed to fetch testimonials:', error);
+        console.error('Failed to fetch testimonials, using frontend fallback:', error);
+        setTestimonials(fallbackTestimonials);
       } finally {
         setLoading(false);
       }

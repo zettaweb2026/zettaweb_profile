@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 
+import { fallbackTechStack } from '../lib/fallbackData';
+
 export const TechStack = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -16,9 +18,14 @@ export const TechStack = () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/techStack`);
         const data = await response.json();
-        setTechCategories(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setTechCategories(data);
+        } else {
+          setTechCategories(fallbackTechStack);
+        }
       } catch (error) {
-        console.error('Failed to fetch tech stack:', error);
+        console.error('Failed to fetch tech stack, using frontend fallback:', error);
+        setTechCategories(fallbackTechStack);
       } finally {
         setLoading(false);
       }

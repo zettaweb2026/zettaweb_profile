@@ -4,6 +4,8 @@ import { useInView } from 'react-intersection-observer';
 import * as LucideIcons from 'lucide-react';
 import { Card } from './ui/card';
 
+import { fallbackAboutValues, fallbackAboutTimeline } from '../lib/fallbackData';
+
 export const About = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -25,10 +27,22 @@ export const About = () => {
           valuesRes.json(),
           timelineRes.json()
         ]);
-        setValues(valuesData);
-        setTimeline(timelineData);
+        
+        if (Array.isArray(valuesData) && valuesData.length > 0) {
+          setValues(valuesData);
+        } else {
+          setValues(fallbackAboutValues);
+        }
+
+        if (Array.isArray(timelineData) && timelineData.length > 0) {
+          setTimeline(timelineData);
+        } else {
+          setTimeline(fallbackAboutTimeline);
+        }
       } catch (error) {
-        console.error('Failed to fetch about data:', error);
+        console.error('Failed to fetch about data, using frontend fallback:', error);
+        setValues(fallbackAboutValues);
+        setTimeline(fallbackAboutTimeline);
       } finally {
         setLoading(false);
       }

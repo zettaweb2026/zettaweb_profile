@@ -50,10 +50,11 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/admin/login" element={<Login />} />
-          <Route path="/admin/register" element={<Register />} />
           <Route path="/login" element={<Navigate to="/admin/login" replace />} />
-          <Route path="/register" element={<Navigate to="/admin/register" replace />} />
+          <Route path="/register" element={<Navigate to="/admin/login" replace />} />
+          <Route path="/admin/register" element={<Navigate to="/admin/login" replace />} />
           <Route path="/access-denied" element={<AccessDenied />} />
+          <Route path="/forgot-password" element={<Navigate to="/" replace />} />
           <Route element={<ProtectedAdminRoute />}>
             <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="/admin/dashboard" element={<AdminPanel />} />
@@ -61,6 +62,7 @@ const App = () => {
             <Route path="/admin/projects/update" element={<AdminPanel />} />
             <Route path="/admin/projects/delete" element={<AdminPanel />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </Router>

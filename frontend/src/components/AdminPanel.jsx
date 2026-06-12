@@ -13,15 +13,40 @@ const AdminPanel = () => {
   const [techStack, setTechStack] = useState([]);
   const [aboutValues, setAboutValues] = useState([]);
   const [aboutTimeline, setAboutTimeline] = useState([]);
+  const [admins, setAdmins] = useState([]);
   
   const [activeTab, setActiveTab] = useState('projects');
   const [editingItem, setEditingItem] = useState(null);
   const [error, setError] = useState('');
 
+  const handleUnauthorized = useCallback((message) => {
+    setError(message || 'Access denied');
+
+    if (message === 'Authentication required' || message === 'Invalid or expired token') {
+      clearAuthSession();
+      navigate('/admin/login', { replace: true });
+    }
+  }, [navigate]);
+
   const fetchData = useCallback(async (resource, setter) => {
     const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}`);
     setter(await res.json());
   }, []);
+
+  const fetchAdmins = useCallback(async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/users`, {
+        headers: getAuthHeaders(),
+      });
+      const data = await parseApiResponse(res);
+      if (data.users) {
+        setAdmins(data.users);
+      }
+    } catch (err) {
+      console.error('Failed to fetch admins:', err);
+      handleUnauthorized(err.message);
+    }
+  }, [handleUnauthorized]);
 
   const loadAllData = useCallback(() => {
     fetchData('projects', setProjects);
@@ -30,20 +55,14 @@ const AdminPanel = () => {
     fetchData('techStack', setTechStack);
     fetchData('aboutValues', setAboutValues);
     fetchData('aboutTimeline', setAboutTimeline);
-  }, [fetchData]);
+    fetchAdmins();
+  }, [fetchData, fetchAdmins]);
 
   useEffect(() => {
     loadAllData();
   }, [loadAllData]);
 
-  const handleUnauthorized = (message) => {
-    setError(message || 'Access denied');
 
-    if (message === 'Authentication required' || message === 'Invalid or expired token') {
-      clearAuthSession();
-      navigate('/admin/login', { replace: true });
-    }
-  };
 
   const handleLogout = () => {
     clearAuthSession();
@@ -52,7 +71,11 @@ const AdminPanel = () => {
 
   const handleDelete = async (resource, id) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}/${id}`, {
+      const url = resource === 'admins'
+        ? `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/users/${id}`
+        : `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}/${id}`;
+
+      const response = await fetch(url, {
         method: 'DELETE',
         headers: getAuthHeaders(),
       });
@@ -88,8 +111,13 @@ const AdminPanel = () => {
       }
     }
 
-    const method = editingItem ? 'PUT' : 'POST';
-    const url = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}${editingItem ? `/${editingItem.id}` : ''}`;
+    let method = editingItem ? 'PUT' : 'POST';
+    let url = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}${editingItem ? `/${editingItem.id}` : ''}`;
+
+    if (resource === 'admins') {
+      method = 'POST';
+      url = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/register`;
+    }
 
     const response = await fetch(url, {
       method,
@@ -152,7 +180,8 @@ const AdminPanel = () => {
           { id: 'services', label: 'Services' },
           { id: 'techStack', label: 'Tech Stack' },
           { id: 'aboutValues', label: 'About Values' },
-          { id: 'aboutTimeline', label: 'About Timeline' }
+          { id: 'aboutTimeline', label: 'About Timeline' },
+          { id: 'admins', label: 'Admins' }
         ].map(tab => (
           <Button
             key={tab.id}
@@ -227,6 +256,13 @@ const AdminPanel = () => {
                 <textarea name="description" defaultValue={editingItem.description} placeholder="Description" required className="w-full p-2 rounded glass h-24" />
               </>
             )}
+            {activeTab === 'admins' && (
+              <>
+                <input name="name" placeholder="Full Name" required className="w-full p-2 rounded glass" />
+                <input name="email" type="email" placeholder="Email Address" required className="w-full p-2 rounded glass" />
+                <input name="password" type="password" placeholder="Password" minLength="6" required className="w-full p-2 rounded glass" />
+              </>
+            )}
             <div className="flex gap-4">
               <Button type="submit" className="bg-primary">Save</Button>
               <Button type="button" variant="outline" onClick={() => setEditingItem(null)}>Cancel</Button>
@@ -242,6 +278,7 @@ const AdminPanel = () => {
               if (activeTab === 'techStack') currentData = techStack;
               if (activeTab === 'aboutValues') currentData = aboutValues;
               if (activeTab === 'aboutTimeline') currentData = aboutTimeline;
+              if (activeTab === 'admins') currentData = admins;
 
               return currentData.map((item) => (
                 <div key={item.id} className="flex justify-between items-center p-4 glass rounded-xl">
@@ -254,8 +291,12 @@ const AdminPanel = () => {
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" onClick={() => setEditingItem(item)} className="glass">Edit</Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(activeTab, item.id)}>Delete</Button>
+                    {activeTab !== 'admins' && (
+                      <Button size="sm" onClick={() => setEditingItem(item)} className="glass">Edit</Button>
+                    )}
+                    {!(activeTab === 'admins' && item.email === 'admin@zettaweb.in') && (
+                      <Button size="sm" variant="destructive" onClick={() => handleDelete(activeTab, item.id)}>Delete</Button>
+                    )}
                   </div>
                 </div>
               ));

@@ -7,6 +7,8 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { toast } from 'sonner';
 
+import { fallbackProjects } from '../lib/fallbackData';
+
 export const Projects = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -32,9 +34,14 @@ export const Projects = () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/projects`);
         const data = await response.json();
-        setProjects(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setProjects(data);
+        } else {
+          setProjects(fallbackProjects);
+        }
       } catch (error) {
-        console.error('Failed to fetch projects:', error);
+        console.error('Failed to fetch projects, using frontend fallback:', error);
+        setProjects(fallbackProjects);
       } finally {
         setLoading(false);
       }

@@ -24,7 +24,7 @@ const sanitizeUser = (user) => ({
 
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -52,7 +52,7 @@ const register = async (req, res) => {
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
-      role: 'user',
+      role: role || 'admin',
     });
 
     const token = signToken(user);
@@ -123,8 +123,67 @@ const getCurrentUser = (req, res) => {
   });
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, '-password');
+    return res.json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch users',
+      error: error.message,
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (id === req.user.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot delete your own account',
+      });
+    }
+
+    const userToDelete = await User.findById(id);
+    if (!userToDelete) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    // Protect Super Admin account from deletion
+    const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+    if (userToDelete.email.toLowerCase().trim() === SUPER_ADMIN_EMAIL) {
+      return res.status(403).json({
+        success: false,
+        message: 'The Super Admin account cannot be deleted',
+      });
+    }
+
+    await User.findByIdAndDelete(id);
+    return res.json({
+      success: true,
+      message: 'User deleted successfully',
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to delete user',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   getCurrentUser,
+  getAllUsers,
+  deleteUser,
 };

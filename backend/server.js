@@ -60,20 +60,24 @@ app.get('/api/:resource', async (req, res) => {
 
     let data = [];
     try {
-      data = await Model.find();
+      if (mongoose.connection.readyState === 1) {
+        data = await Model.find();
+      } else {
+        const fallbackData = getFallbackResource(resource);
+        if (fallbackData.length > 0) {
+          return res.json(fallbackData);
+        }
+        return res.status(503).json({
+          success: false,
+          message: 'Database offline and no fallback available',
+        });
+      }
     } catch (queryError) {
       const fallbackData = getFallbackResource(resource);
       if (fallbackData.length > 0) {
         return res.json(fallbackData);
       }
       throw queryError;
-    }
-
-    if (!data || data.length === 0) {
-      const fallbackData = getFallbackResource(resource);
-      if (fallbackData.length > 0) {
-        return res.json(fallbackData);
-      }
     }
 
     return res.json(data);
