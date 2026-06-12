@@ -19,12 +19,13 @@ const sanitizeUser = (user) => ({
   name: user.name,
   email: user.email,
   role: user.role,
+  permissions: user.permissions || [],
   createdAt: user.createdAt,
 });
 
 const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, permissions } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -53,6 +54,7 @@ const register = async (req, res) => {
       email: email.toLowerCase().trim(),
       password,
       role: role || 'admin',
+      permissions: permissions || ['projects', 'testimonials', 'services', 'techStack', 'aboutValues', 'aboutTimeline'],
     });
 
     const token = signToken(user);
@@ -180,10 +182,77 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, password, role, permissions } = req.body;
+
+    const userToUpdate = await User.findById(id);
+    if (!userToUpdate) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@zettaweb.in').trim().toLowerCase();
+    const isSuperAdminEmail = userToUpdate.email.toLowerCase().trim() === SUPER_ADMIN_EMAIL;
+
+    if (isSuperAdminEmail) {
+      if (email && email.toLowerCase().trim() !== SUPER_ADMIN_EMAIL) {
+        return res.status(400).json({
+          success: false,
+          message: 'The Super Admin email address cannot be changed',
+        });
+      }
+      if (role && role !== 'admin') {
+        return res.status(400).json({
+          success: false,
+          message: 'The Super Admin role cannot be changed',
+        });
+      }
+    }
+
+    if (email && email.toLowerCase().trim() !== userToUpdate.email) {
+      const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
+      if (existingUser) {
+        return res.status(409).json({
+          success: false,
+          message: 'An account with this email already exists',
+        });
+      }
+    }
+
+    if (name) userToUpdate.name = name.trim();
+    if (email && !isSuperAdminEmail) userToUpdate.email = email.toLowerCase().trim();
+    if (role && !isSuperAdminEmail) userToUpdate.role = role;
+    if (permissions && !isSuperAdminEmail) userToUpdate.permissions = permissions;
+
+    if (password) {
+      userToUpdate.password = password;
+    }
+
+    await userToUpdate.save();
+
+    return res.json({
+      success: true,
+      message: 'User updated successfully',
+      user: sanitizeUser(userToUpdate),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update user',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   getCurrentUser,
   getAllUsers,
   deleteUser,
+  updateUser,
 };

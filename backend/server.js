@@ -8,7 +8,7 @@ const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const Models = require('./models/contentModels');
-const { authenticateUser, authorizeAdmin } = require('./middleware/authMiddleware');
+const { authenticateUser, authorizeAdmin, authorizeResource } = require('./middleware/authMiddleware');
 
 const app = express();
 
@@ -33,9 +33,27 @@ const getFallbackResource = (resource) => {
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/webnexa')
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+let cachedDb = null;
+
+const connectDb = async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState === 1) {
+      return next();
+    }
+
+    if (!cachedDb) {
+      cachedDb = mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/webnexa');
+    }
+
+    await cachedDb;
+    next();
+  } catch (error) {
+    console.error('MongoDB connection error:', error.message);
+    next();
+  }
+};
+
+app.use('/api', connectDb);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -94,7 +112,7 @@ app.get("/", (req, res) => {
 });
 
 // POST new
-app.post('/api/:resource', async (req, res) => {
+app.post('/api/:resource', authenticateUser, authorizeResource('resource'), async (req, res) => {
   try {
     const { resource } = req.params;
     const Model = Models[resource];
@@ -118,7 +136,7 @@ app.post('/api/:resource', async (req, res) => {
   }
 });
 
-app.put('/api/:resource/:id', authenticateUser, authorizeAdmin, async (req, res) => {
+app.put('/api/:resource/:id', authenticateUser, authorizeResource('resource'), async (req, res) => {
   try {
     const { resource, id } = req.params;
     const Model = Models[resource];
@@ -158,7 +176,7 @@ app.put('/api/:resource/:id', authenticateUser, authorizeAdmin, async (req, res)
   }
 });
 
-app.delete('/api/:resource/:id', authenticateUser, authorizeAdmin, async (req, res) => {
+app.delete('/api/:resource/:id', authenticateUser, authorizeResource('resource'), async (req, res) => {
   try {
     const { resource, id } = req.params;
     const Model = Models[resource];

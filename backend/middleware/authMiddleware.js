@@ -37,6 +37,7 @@ const authenticateUser = async (req, res, next) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      permissions: user.permissions || [],
     };
 
     next();
@@ -59,7 +60,65 @@ const authorizeAdmin = (req, res, next) => {
   next();
 };
 
+const authorizeSuperAdmin = (req, res, next) => {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access Denied',
+    });
+  }
+
+  const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@zettaweb.in').trim().toLowerCase();
+  if (req.user.email.toLowerCase().trim() !== SUPER_ADMIN_EMAIL) {
+    return res.status(403).json({
+      success: false,
+      message: 'Access Denied: Super Admin only',
+    });
+  }
+
+  next();
+};
+
+const authorizeResource = (resourceParamName) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required',
+      });
+    }
+
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access Denied',
+      });
+    }
+
+    const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@zettaweb.in').trim().toLowerCase();
+    const isSuperAdmin = req.user.email.toLowerCase().trim() === SUPER_ADMIN_EMAIL;
+
+    if (isSuperAdmin) {
+      return next();
+    }
+
+    const resource = req.params[resourceParamName];
+    const userPermissions = req.user.permissions || [];
+
+    if (!userPermissions.includes(resource)) {
+      return res.status(403).json({
+        success: false,
+        message: `Access Denied: You do not have permission to manage ${resource}`,
+      });
+    }
+
+    next();
+  };
+};
+
 module.exports = {
   authenticateUser,
   authorizeAdmin,
+  authorizeSuperAdmin,
+  authorizeResource,
 };
