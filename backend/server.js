@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
@@ -9,6 +11,24 @@ const Models = require('./models/contentModels');
 const { authenticateUser, authorizeAdmin } = require('./middleware/authMiddleware');
 
 const app = express();
+
+const dbFilePath = path.join(__dirname, 'db.json');
+let fallbackDb = {};
+
+try {
+  if (fs.existsSync(dbFilePath)) {
+    fallbackDb = JSON.parse(fs.readFileSync(dbFilePath, 'utf8'));
+  }
+} catch (err) {
+  console.warn('Failed to load fallback db.json:', err.message);
+}
+
+const getFallbackResource = (resource) => {
+  if (Array.isArray(fallbackDb[resource])) {
+    return fallbackDb[resource];
+  }
+  return [];
+};
 
 app.use(cors());
 app.use(express.json());
@@ -28,13 +48,34 @@ app.get('/api/:resource', async (req, res) => {
     const Model = Models[resource];
 
     if (!Model) {
+      const fallbackData = getFallbackResource(resource);
+      if (fallbackData.length > 0) {
+        return res.json(fallbackData);
+      }
       return res.status(404).json({
         success: false,
         message: 'Resource not found',
       });
     }
 
-    const data = await Model.find();
+    let data = [];
+    try {
+      data = await Model.find();
+    } catch (queryError) {
+      const fallbackData = getFallbackResource(resource);
+      if (fallbackData.length > 0) {
+        return res.json(fallbackData);
+      }
+      throw queryError;
+    }
+
+    if (!data || data.length === 0) {
+      const fallbackData = getFallbackResource(resource);
+      if (fallbackData.length > 0) {
+        return res.json(fallbackData);
+      }
+    }
+
     return res.json(data);
   } catch (error) {
     return res.status(500).json({
@@ -148,7 +189,7 @@ app.delete('/api/:resource/:id', authenticateUser, authorizeAdmin, async (req, r
   }
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
