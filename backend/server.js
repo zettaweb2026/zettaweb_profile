@@ -85,7 +85,12 @@ app.get('/api/:resource', async (req, res) => {
   }
 });
 
-app.post('/api/:resource', authenticateUser, authorizeAdmin, async (req, res) => {
+app.get("/", (req, res) => {
+    res.send("Zetta Web API is running");
+});
+
+// POST new
+app.post('/api/:resource', async (req, res) => {
   try {
     const { resource } = req.params;
     const Model = Models[resource];
