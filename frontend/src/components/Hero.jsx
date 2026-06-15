@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { Button } from './ui/button';
 import { ArrowRight, Code, Zap, Globe, Cpu, Database, Server } from 'lucide-react';
 
@@ -7,6 +7,31 @@ export const Hero = () => {
   const [text, setText] = useState('');
   const fullText = 'Building Digital Solutions for the Future';
   const [showCursor, setShowCursor] = useState(true);
+
+  // Mouse tracking for 3D card rotation
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const rotateX = useTransform(mouseY, [-200, 200], [12, -12]);
+  const rotateY = useTransform(mouseX, [-200, 200], [-12, 12]);
+
+  const springRotateX = useSpring(rotateX, { stiffness: 120, damping: 15 });
+  const springRotateY = useSpring(rotateY, { stiffness: 120, damping: 15 });
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const xVal = e.clientX - rect.left - width / 2;
+    const yVal = e.clientY - rect.top - height / 2;
+    mouseX.set(xVal);
+    mouseY.set(yVal);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
 
   useEffect(() => {
     let index = 0;
@@ -162,8 +187,17 @@ export const Hero = () => {
           </div>
 
           {/* Right Column: Single Front Card */}
-          <div className="lg:col-span-5 hidden lg:flex items-center justify-center h-[550px]">
-            <div className="w-80 h-[420px] glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl border-primary/30 transition-transform duration-300 hover:-translate-y-2">
+          <div className="lg:col-span-5 hidden lg:flex items-center justify-center perspective-1000 h-[550px]">
+            <motion.div
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                rotateX: springRotateX,
+                rotateY: springRotateY,
+                transformStyle: "preserve-3d",
+              }}
+              className="w-80 h-[420px] glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl border-primary/30 cursor-grab active:cursor-grabbing preserve-3d animate-pulse-glow-blue"
+            >
               <div className="flex justify-between items-start">
                 <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
                   <Code className="w-5 h-5 text-primary" />
@@ -195,7 +229,7 @@ export const Hero = () => {
                   <span className="font-mono text-[10px] text-green-400">ONLINE</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
