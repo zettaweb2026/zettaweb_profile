@@ -16,7 +16,7 @@ const AdminPanel = () => {
   const [aboutTimeline, setAboutTimeline] = useState([]);
   const [admins, setAdmins] = useState([]);
 
-  const isSuperAdmin = currentUser && currentUser.email === 'admin@zettaweb.in';
+  const isSuperAdmin = currentUser && currentUser.email === 'support@zetta-web.in';
   
   const allTabs = [
     { id: 'projects', label: 'Projects', icon: 'Briefcase' },
@@ -567,7 +567,7 @@ const AdminPanel = () => {
                       </p>
                       {activeTab === 'admins' && (
                         <div className="flex flex-wrap gap-1.5 mt-2">
-                          {item.email === 'admin@zettaweb.in' ? (
+                          {item.email === 'support@zetta-web.in' ? (
                             <span className="text-[10px] px-2 py-0.5 rounded-md font-semibold bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/20 text-yellow-400">
                               Super Admin
                             </span>
@@ -582,7 +582,7 @@ const AdminPanel = () => {
                       )}
                     </div>
                     <div className="flex gap-2.5 self-end sm:self-auto">
-                      {(activeTab !== 'admins' || item.email !== 'admin@zettaweb.in') && (
+                      {(activeTab !== 'admins' || item.email !== 'support@zetta-web.in') && (
                         <Button 
                           size="sm" 
                           onClick={() => setEditingItem(item)} 
@@ -592,7 +592,7 @@ const AdminPanel = () => {
                           <span>Edit</span>
                         </Button>
                       )}
-                      {!(activeTab === 'admins' && item.email === 'admin@zettaweb.in') && (
+                      {!(activeTab === 'admins' && item.email === 'support@zetta-web.in') && (
                         <Button 
                           size="sm" 
                           variant="destructive" 

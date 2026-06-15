@@ -30,7 +30,7 @@ export const Footer = () => {
     { icon: Linkedin, href: '#', label: 'LinkedIn' },
     { icon: Github, href: 'https://github.com/zettaweb2026', label: 'GitHub' },
     { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Mail, href: 'mailto:hello@zettaweb.com', label: 'Email' },
+    { icon: Mail, href: 'mailto:support@zetta-web.in', label: 'Email' },
   ];
 
   const scrollToSection = (e, href) => {

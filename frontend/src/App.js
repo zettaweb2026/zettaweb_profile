@@ -17,26 +17,51 @@ import AccessDenied from './components/AccessDenied';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import Login from './components/ui/Login';
 import Register from './components/ui/Register';
+import BookNow from './components/BookNow';
 import './index.css';
 
-const Home = () => (
-  <>
-    <ParticleBackground />
-    <Navbar />
-    <main className="relative z-10">
-      <Hero />
-      <About />
-      <Services />
-      <TechStack />
-      <Projects />
-      <WhyChooseUs />
-      <Testimonials />
-      <Contact />
-    </main>
-    <Footer />
-    <WhatsAppButton />
-  </>
-);
+const Home = () => {
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const timer = setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          const offset = 80;
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = element.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  return (
+    <>
+      <ParticleBackground />
+      <Navbar />
+      <main className="relative z-10">
+        <Hero />
+        <About />
+        <Services />
+        <TechStack />
+        <Projects />
+        <WhyChooseUs />
+        <Testimonials />
+        <Contact />
+      </main>
+      <Footer />
+      <WhatsAppButton />
+    </>
+  );
+};
 
 const App = () => {
   useEffect(() => {
@@ -49,6 +74,7 @@ const App = () => {
       <div className="relative min-h-screen bg-background text-foreground">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/book-now" element={<BookNow />} />
           <Route path="/admin/login" element={<Login />} />
           <Route path="/login" element={<Navigate to="/admin/login" replace />} />
           <Route path="/register" element={<Navigate to="/admin/login" replace />} />

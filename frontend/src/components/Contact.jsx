@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import emailjs from '@emailjs/browser';
 import { Mail, MapPin, Phone, Send, Loader2, CheckCircle2 } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
@@ -33,27 +32,23 @@ export const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const serviceId = 'service_1buthja';
-    const templateId = 'template_z9sjyl2';
-    const publicKey = '2ubNVeizLVSHrSJDo';
-
     try {
-      try {
-        await emailjs.send(
-          serviceId,
-          templateId,
-          {
-            from_name: formData.name,
-            from_email: formData.email,
-            phone: formData.phone,
-            message: formData.message,
-          },
-          publicKey
-        );
-      } catch (emailError) {
-        console.warn('EmailJS send failed (likely unconfigured credentials). Falling back to simulated submission.', emailError);
-        // Simulate network latency for demo
-        await new Promise((resolve) => setTimeout(resolve, 1200));
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'contact',
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message via backend server');
       }
 
       setIsSuccess(true);
@@ -80,8 +75,8 @@ export const Contact = () => {
     {
       icon: Mail,
       title: 'Email',
-      value: 'hello@zettaweb.com',
-      link: 'mailto:hello@zettaweb.com',
+      value: 'support@zetta-web.in',
+      link: 'mailto:support@zetta-web.in',
     },
     {
       icon: Phone,

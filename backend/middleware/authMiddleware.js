@@ -68,7 +68,7 @@ const authorizeSuperAdmin = (req, res, next) => {
     });
   }
 
-  const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@zettaweb.in').trim().toLowerCase();
+  const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'support@zetta-web.in').trim().toLowerCase();
   if (req.user.email.toLowerCase().trim() !== SUPER_ADMIN_EMAIL) {
     return res.status(403).json({
       success: false,
@@ -95,7 +95,7 @@ const authorizeResource = (resourceParamName) => {
       });
     }
 
-    const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@zettaweb.in').trim().toLowerCase();
+    const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'support@zetta-web.in').trim().toLowerCase();
     const isSuperAdmin = req.user.email.toLowerCase().trim() === SUPER_ADMIN_EMAIL;
 
     if (isSuperAdmin) {

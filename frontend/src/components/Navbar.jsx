@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 
 export const Navbar = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('#hero');
@@ -40,6 +43,11 @@ export const Navbar = () => {
 
   const scrollToSection = (e, href) => {
     e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/' + href);
+      setIsOpen(false);
+      return;
+    }
     const element = document.querySelector(href);
     if (element) {
       const offset = 80;
@@ -55,8 +63,6 @@ export const Navbar = () => {
       setIsOpen(false);
       setActiveSection(href);
     }
-    // console.log("Clicked:", href);
-    // console.log("Element:", document.querySelector(href));
   };
 
   return (
@@ -115,10 +121,10 @@ export const Navbar = () => {
               );
             })}
             <Button
-              onClick={(e) => scrollToSection(e, '#contact')}
+              onClick={() => navigate('/book-now')}
               className="ml-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-5 py-2.5 rounded-xl transition-all shadow-md animate-pulse-glow-blue border-none"
             >
-              Get Started
+              Book Now
             </Button>
           </div>
 
@@ -162,10 +168,13 @@ export const Navbar = () => {
               })}
               <div className="pt-4 border-t border-muted/20">
                 <Button
-                  onClick={(e) => scrollToSection(e, '#contact')}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-5 rounded-xl shadow-lg"
+                  onClick={() => {
+                    navigate('/book-now');
+                    setIsOpen(false);
+                  }}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-5 rounded-xl shadow-lg border-none animate-pulse-glow-blue"
                 >
-                  Get Started
+                  Book Now
                 </Button>
               </div>
             </div>

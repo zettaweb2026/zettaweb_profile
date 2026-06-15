@@ -195,7 +195,7 @@ const updateUser = async (req, res) => {
       });
     }
 
-    const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@zettaweb.in').trim().toLowerCase();
+    const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'support@zetta-web.in').trim().toLowerCase();
     const isSuperAdminEmail = userToUpdate.email.toLowerCase().trim() === SUPER_ADMIN_EMAIL;
 
     if (isSuperAdminEmail) {
