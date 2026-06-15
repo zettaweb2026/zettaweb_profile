@@ -134,8 +134,11 @@ export const Services = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <div className="inline-block glass px-4 py-2 rounded-full mb-4 animate-pulse-glow-blue border-primary/20">
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Our Services</span>
+          <div className="relative inline-block mb-4">
+            <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-semibold text-primary/45 tracking-wider">02</span>
+            <div className="inline-block glass px-4 py-2 rounded-full border-primary/20 animate-pulse-glow-blue">
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Our Services</span>
+            </div>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
             What We <span className="gradient-text glow-text">Offer</span>
@@ -147,7 +150,7 @@ export const Services = () => {
         </motion.div>
 
         {/* Services Cards Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 perspective-1000">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 perspective-1000">
           {services.map((service, index) => (
             <motion.div
               key={service.title}

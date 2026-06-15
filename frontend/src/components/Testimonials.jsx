@@ -91,8 +91,11 @@ export const Testimonials = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <div className="inline-block glass px-4 py-2 rounded-full mb-4 border-primary/20 animate-pulse-glow-blue">
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Testimonials</span>
+          <div className="relative inline-block mb-4">
+            <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-semibold text-primary/45 tracking-wider">06</span>
+            <div className="inline-block glass px-4 py-2 rounded-full border-primary/20 animate-pulse-glow-blue">
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Testimonials</span>
+            </div>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
             What Our <span className="gradient-text glow-text">Clients Say</span>
@@ -104,49 +107,53 @@ export const Testimonials = () => {
 
         {/* Carousel Content Container */}
         <div className="relative min-h-[380px] sm:min-h-[320px] mb-8 overflow-hidden px-2">
-          {/* Desktop View - Shows 3 Cards with Slider Entry */}
+          {/* #5 FIX: Desktop — 3 stable slots, each animates its own content on index change */}
           <div className="hidden lg:grid grid-cols-3 gap-8 h-full">
-            <AnimatePresence initial={false} custom={direction} mode="popLayout">
-              {getVisibleTestimonials().map((testimonial, index) => (
+            {[0, 1, 2].map((offset) => {
+              const t = testimonials[(currentIndex + offset) % testimonials.length];
+              return (
                 <motion.div
-                  key={`${testimonial.name}-${currentIndex}-${index}`}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.45, ease: 'easeInOut' }}
+                  key={`slot-${offset}`}
                   className="h-full"
                 >
-                  <Card className="glass p-8 h-full flex flex-col justify-between rounded-3xl border-muted/20 hover:border-primary/20 transition-all duration-300 hover:shadow-xl relative overflow-hidden group">
-                    <Quote className="w-10 h-10 text-primary/10 absolute -top-1 right-3 group-hover:text-primary/20 transition-colors select-none" />
-                    
-                    <div className="space-y-4">
-                      <div className="flex gap-1 select-none">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-secondary text-secondary" />
-                        ))}
-                      </div>
-                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed italic">
-                        "{testimonial.feedback}"
-                      </p>
-                    </div>
-
-                    <div className="flex items-center space-x-4 pt-6 border-t border-muted/20 mt-4 select-none">
-                      <Avatar className="w-12 h-12 bg-primary/10 border border-primary/20">
-                        <AvatarFallback className="text-primary font-black text-sm">
-                          {testimonial.avatar}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <h4 className="font-extrabold text-foreground text-sm tracking-wide">{testimonial.name}</h4>
-                        <p className="text-[11px] text-muted-foreground font-semibold">{testimonial.role}</p>
-                      </div>
-                    </div>
-                  </Card>
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`${offset}-${currentIndex}`}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{ duration: 0.35, ease: 'easeInOut', delay: offset * 0.05 }}
+                      className="h-full"
+                    >
+                      <Card className="glass p-8 h-full flex flex-col justify-between rounded-3xl border-muted/20 hover:border-primary/20 transition-all duration-300 hover:shadow-xl relative overflow-hidden group">
+                        <Quote className="w-10 h-10 text-primary/10 absolute -top-1 right-3 group-hover:text-primary/20 transition-colors select-none" />
+                        <div className="space-y-4">
+                          <div className="flex gap-1 select-none">
+                            {[...Array(t.rating)].map((_, i) => (
+                              <Star key={i} className="w-4 h-4 fill-secondary text-secondary" />
+                            ))}
+                          </div>
+                          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed italic">
+                            "{t.feedback}"
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-4 pt-6 border-t border-muted/20 mt-4 select-none">
+                          <Avatar className="w-12 h-12 bg-primary/10 border border-primary/20">
+                            <AvatarFallback className="text-primary font-black text-sm">
+                              {t.avatar}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <h4 className="font-extrabold text-foreground text-sm tracking-wide">{t.name}</h4>
+                            <p className="text-[11px] text-muted-foreground font-semibold">{t.role}</p>
+                          </div>
+                        </div>
+                      </Card>
+                    </motion.div>
+                  </AnimatePresence>
                 </motion.div>
-              ))}
-            </AnimatePresence>
+              );
+            })}
           </div>
 
           {/* Mobile View - Shows 1 Card */}

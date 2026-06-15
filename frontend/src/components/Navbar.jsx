@@ -12,24 +12,31 @@ export const Navbar = () => {
   const [activeSection, setActiveSection] = useState('#hero');
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-      // Section intersection detection
-      const sections = ['#hero', '#about', '#services', '#tech-stack', '#projects', '#contact'];
-      for (const section of sections) {
-        const el = document.querySelector(section);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 120 && rect.bottom >= 120) {
-            setActiveSection(section);
-            break;
+    // #3 FIX: Use IntersectionObserver for accurate active section detection
+    const sectionIds = ['hero', 'about', 'services', 'tech-stack', 'projects', 'contact'];
+    const observers = [];
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActiveSection(`#${id}`);
           }
-        }
-      }
+        },
+        { threshold: 0.4, rootMargin: '-80px 0px 0px 0px' }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observers.forEach((obs) => obs.disconnect());
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navItems = [
@@ -120,9 +127,10 @@ export const Navbar = () => {
                 </a>
               );
             })}
+            {/* #16 FIX: Pulse glow only on hover, not constantly */}
             <Button
               onClick={() => navigate('/book-now')}
-              className="ml-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-5 py-2.5 rounded-xl transition-all shadow-md animate-pulse-glow-blue border-none"
+              className="ml-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-5 py-2.5 rounded-xl transition-all shadow-md hover:animate-pulse-glow-blue border-none"
             >
               Book Now
             </Button>
@@ -172,7 +180,7 @@ export const Navbar = () => {
                     navigate('/book-now');
                     setIsOpen(false);
                   }}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-5 rounded-xl shadow-lg border-none animate-pulse-glow-blue"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-5 rounded-xl shadow-lg border-none hover:animate-pulse-glow-blue"
                 >
                   Book Now
                 </Button>

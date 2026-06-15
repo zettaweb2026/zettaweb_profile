@@ -1,12 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 import { Button } from './ui/button';
-import { ArrowRight, Code, Zap, Globe } from 'lucide-react';
+import { ArrowRight, Code, Zap, Globe, ChevronDown } from 'lucide-react';
+import useCountUp from '../hooks/useCountUp';
 
 export const Hero = () => {
   const [text, setText] = useState('');
   const fullText = 'Building Digital Solutions for the Future';
   const [showCursor, setShowCursor] = useState(true);
+
+  // For stat counters — trigger once hero is visible
+  const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.3 });
+  const projectsCount = useCountUp('150+', 1600, statsInView);
+  const clientsCount  = useCountUp('80+',  1400, statsInView);
+  const yearsCount    = useCountUp('5+',   1200, statsInView);
 
   // Mouse tracking for 3D card rotation
   const mouseX = useMotionValue(0);
@@ -65,9 +73,9 @@ export const Hero = () => {
   };
 
   const stats = [
-    { icon: Code, label: 'Projects Completed', value: '150+' },
-    { icon: Globe, label: 'Happy Clients', value: '80+' },
-    { icon: Zap, label: 'Years Experience', value: '5+' },
+    { icon: Code,  label: 'Projects Completed', value: projectsCount },
+    { icon: Globe, label: 'Happy Clients',       value: clientsCount  },
+    { icon: Zap,   label: 'Years Experience',    value: yearsCount    },
   ];
 
   return (
@@ -96,8 +104,9 @@ export const Hero = () => {
               transition={{ duration: 0.5 }}
               className="inline-block"
             >
+              {/* #14 FIX: Changed from animate-bounce to animate-pulse on the Zap icon */}
               <div className="glass px-5 py-1.5 rounded-full border border-primary/30 inline-flex items-center space-x-2 animate-pulse-glow-blue">
-                <Zap className="w-4 h-4 text-primary animate-bounce" />
+                <Zap className="w-4 h-4 text-primary animate-pulse" />
                 <span className="text-xs font-semibold text-foreground tracking-wide uppercase">Innovating Since 2021</span>
               </div>
             </motion.div>
@@ -163,7 +172,9 @@ export const Hero = () => {
               </Button>
             </motion.div>
 
+            {/* #1 FIX: Animated stat counters with useCountUp */}
             <motion.div
+              ref={statsRef}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
@@ -182,6 +193,27 @@ export const Hero = () => {
                 );
               })}
             </motion.div>
+
+            {/* #2 FIX: Mobile stats strip — visible only on mobile/tablet */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.6 }}
+              className="flex lg:hidden items-center justify-start gap-3 flex-wrap pt-2"
+            >
+              {[
+                { label: '150+ Projects', color: 'border-primary/30 text-primary' },
+                { label: '80+ Clients',   color: 'border-secondary/30 text-secondary' },
+                { label: '5+ Years',      color: 'border-primary/30 text-primary' },
+              ].map((badge) => (
+                <span
+                  key={badge.label}
+                  className={`glass px-3 py-1 rounded-full border text-xs font-bold font-mono ${badge.color}`}
+                >
+                  {badge.label}
+                </span>
+              ))}
+            </motion.div>
           </div>
 
           {/* Right Column: 3D Hover Card */}
@@ -198,7 +230,7 @@ export const Hero = () => {
               }}
               className="relative w-80 h-[420px] cursor-grab active:cursor-grabbing preserve-3d"
             >
-              {/* Glowing border wrapper — the cyan ring from the screenshot */}
+              {/* Glowing border wrapper */}
               <div
                 className="absolute inset-0 rounded-3xl transition-all duration-500"
                 style={{
@@ -226,7 +258,7 @@ export const Hero = () => {
                     }}
                   />
 
-                  {/* Subtle grid pattern matching screenshot */}
+                  {/* Subtle grid pattern */}
                   <div
                     className="absolute inset-0 rounded-[22px] pointer-events-none"
                     style={{
@@ -292,12 +324,12 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* Scroll Down Indicator */}
+      {/* #13 FIX: Scroll Down Indicator with label */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 0.5 }}
-        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer"
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer flex flex-col items-center gap-2"
         onClick={() => scrollToSection('#about')}
       >
         <div className="w-6 h-10 border-2 border-primary/40 rounded-full flex items-start justify-center p-1.5 hover:border-primary transition-colors">
@@ -307,6 +339,7 @@ export const Hero = () => {
             className="w-1.5 h-1.5 bg-primary rounded-full"
           />
         </div>
+        <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Scroll</span>
       </motion.div>
     </section>
   );

@@ -1,8 +1,44 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import * as SiIcons from 'react-icons/si';
+import * as FaIcons from 'react-icons/fa';
+import { Code2 } from 'lucide-react';
 
 import { fallbackTechStack } from '../lib/fallbackData';
+
+// Map technology names to their corresponding brand icons and colors
+const iconMap = {
+  'React': { Icon: SiIcons.SiReact, color: 'text-[#61DAFB]' },
+  'Next.js': { Icon: SiIcons.SiNextdotjs, color: 'text-foreground' },
+  'Vue.js': { Icon: SiIcons.SiVuedotjs, color: 'text-[#4FC08D]' },
+  'TypeScript': { Icon: SiIcons.SiTypescript, color: 'text-[#3178C6]' },
+  'Tailwind CSS': { Icon: SiIcons.SiTailwindcss, color: 'text-[#06B6D4]' },
+  'Node.js': { Icon: SiIcons.SiNodedotjs, color: 'text-[#339933]' },
+  'Python': { Icon: SiIcons.SiPython, color: 'text-[#3776AB]' },
+  'Express': { Icon: SiIcons.SiExpress, color: 'text-foreground/80' },
+  'FastAPI': { Icon: SiIcons.SiFastapi, color: 'text-[#009688]' },
+  'GraphQL': { Icon: SiIcons.SiGraphql, color: 'text-[#E10098]' },
+  'TensorFlow': { Icon: SiIcons.SiTensorflow, color: 'text-[#FF6F00]' },
+  'PyTorch': { Icon: SiIcons.SiPytorch, color: 'text-[#EE4C2C]' },
+  'OpenAI': { Icon: SiIcons.SiOpenai, color: 'text-[#10A37F]' },
+  'Scikit-learn': { Icon: SiIcons.SiScikitlearn, color: 'text-[#F7931E]' },
+  'Hugging Face': { Icon: SiIcons.SiHuggingface, color: 'text-[#FFD21E]' },
+  'AWS': { Icon: FaIcons.FaAws, color: 'text-[#FF9900]' },
+  'Docker': { Icon: SiIcons.SiDocker, color: 'text-[#2496ED]' },
+  'Kubernetes': { Icon: SiIcons.SiKubernetes, color: 'text-[#326CE5]' },
+  'GitHub Actions': { Icon: SiIcons.SiGithubactions, color: 'text-[#2088FF]' },
+  'Linux': { Icon: SiIcons.SiLinux, color: 'text-[#FCC624]' }
+};
+
+const TechIcon = ({ name }) => {
+  const iconConfig = iconMap[name];
+  if (iconConfig) {
+    const { Icon, color } = iconConfig;
+    return <Icon className={`w-10 h-10 mx-auto ${color} group-hover:scale-110 transition-all duration-300`} />;
+  }
+  return <Code2 className="w-10 h-10 mx-auto text-primary group-hover:scale-110 transition-all duration-300" />;
+};
 
 export const TechStack = () => {
   const [ref, inView] = useInView({
@@ -48,15 +84,18 @@ export const TechStack = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-left mb-16 max-w-4xl"
         >
-          <div className="inline-block glass px-4 py-2 rounded-full mb-4 border-primary/20 animate-pulse-glow-blue">
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Technology Stack</span>
+          <div className="relative inline-block mb-4">
+            <span className="absolute -top-6 left-0 text-xs font-semibold text-primary/45 tracking-wider">03</span>
+            <div className="inline-block glass px-4 py-2 rounded-full border-primary/20 animate-pulse-glow-blue">
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Technology Stack</span>
+            </div>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
             Our Tech <span className="gradient-text glow-text">Arsenal</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed">
             We leverage the latest and most powerful technologies to build robust, 
             scalable, and future-proof solutions.
           </p>
@@ -87,8 +126,8 @@ export const TechStack = () => {
                     className={`glass p-6 rounded-2xl text-center hover:scale-105 border transition-all duration-300 group cursor-pointer ${tech.color}`}
                   >
                     {/* Floating Tech Icon */}
-                    <div className="text-4xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 select-none">
-                      {tech.icon}
+                    <div className="mb-4 h-12 flex items-center justify-center group-hover:rotate-6 transition-all duration-300 select-none">
+                      <TechIcon name={tech.name} />
                     </div>
                     <h4 className="font-extrabold text-foreground mb-1 text-sm tracking-wide">
                       {tech.name}

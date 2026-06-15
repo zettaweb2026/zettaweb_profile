@@ -21,8 +21,8 @@ export const Footer = () => {
     Resources: [
       { name: 'Portfolio', href: '#projects' },
       { name: 'Tech Stack', href: '#tech-stack' },
-      { name: 'Blog', href: '#' },
-      { name: 'Documentation', href: '#' },
+      { name: 'Blog', href: '#', badge: 'Coming Soon' },
+      { name: 'Documentation', href: '#', badge: 'Coming Soon' },
     ],
   };
 
@@ -54,9 +54,15 @@ export const Footer = () => {
     }
   };
 
+  const [isSubscribed, setIsSubscribed] = React.useState(false);
+
   const handleSubscribe = (e) => {
     e.preventDefault();
+    setIsSubscribed(true);
     toast.success('Successfully subscribed to Zettaweb Newsletter!');
+    setTimeout(() => {
+      setIsSubscribed(false);
+    }, 4000);
   };
 
   return (
@@ -104,7 +110,7 @@ export const Footer = () => {
               <h3 className="font-extrabold text-sm uppercase tracking-wider text-foreground">{category}</h3>
               <ul className="space-y-2.5">
                 {links.map((link) => (
-                  <li key={link.name}>
+                  <li key={link.name} className="flex items-center gap-2">
                     <a
                       href={link.href}
                       onClick={(e) => scrollToSection(e, link.href)}
@@ -112,6 +118,11 @@ export const Footer = () => {
                     >
                       {link.name}
                     </a>
+                    {link.badge && (
+                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold uppercase tracking-wider scale-90 select-none">
+                        {link.badge}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -128,20 +139,27 @@ export const Footer = () => {
                 Subscribe to our newsletter for the latest tech insights and updates.
               </p>
             </div>
-            <form onSubmit={handleSubscribe} className="flex gap-2 w-full lg:w-auto">
-              <input
-                type="email"
-                required
-                placeholder="Enter your email"
-                className="px-4 py-3 glass rounded-xl border border-muted/30 focus:border-primary/70 focus:ring-0 outline-none text-xs sm:text-sm flex-1 lg:w-64 bg-background/30 transition-all"
-              />
-              <button 
-                type="submit"
-                className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md"
-              >
-                Subscribe
-              </button>
-            </form>
+            {isSubscribed ? (
+              <div className="flex items-center gap-3 bg-primary/10 border border-primary/20 rounded-xl px-5 py-3 text-primary text-sm font-bold animate-pulse-glow-blue w-full lg:w-auto">
+                <span className="text-xl">🎉</span>
+                <span>You're subscribed to Zettaweb Newsletter!</span>
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex gap-2 w-full lg:w-auto">
+                <input
+                  type="email"
+                  required
+                  placeholder="Enter your email"
+                  className="px-4 py-3 glass rounded-xl border border-muted/30 focus:border-primary/70 focus:ring-0 outline-none text-xs sm:text-sm flex-1 lg:w-64 bg-background/30 transition-all"
+                />
+                <button 
+                  type="submit"
+                  className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md"
+                >
+                  Subscribe
+                </button>
+              </form>
+            )}
           </div>
         </div>
 

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Navigate, Routes, Route } from 'react-router-d
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
+import SectionDivider from './components/SectionDivider';
 import Services from './components/Services';
 import TechStack from './components/TechStack';
 import Projects from './components/Projects';
@@ -60,13 +61,21 @@ const Home = () => {
       <Navbar />
       <main className="relative z-10">
         <Hero />
+        <SectionDivider />
         <About />
+        <SectionDivider />
         <Services />
+        <SectionDivider />
         <TechStack />
+        <SectionDivider />
         <Projects />
+        <SectionDivider />
         <WhyChooseUs />
+        <SectionDivider />
         <Testimonials />
+        <SectionDivider />
         <FAQ />
+        <SectionDivider />
         <Contact />
       </main>
       <Footer />

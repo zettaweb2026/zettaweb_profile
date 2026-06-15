@@ -65,15 +65,18 @@ export const About = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          className="text-left mb-20 max-w-4xl"
         >
-          <div className="inline-block glass px-4 py-2 rounded-full mb-4 border-primary/20 animate-pulse-glow-blue">
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider">About Us</span>
+          <div className="relative inline-block mb-4">
+            <span className="absolute -top-6 left-0 text-xs font-semibold text-primary/45 tracking-wider">01</span>
+            <div className="inline-block glass px-4 py-2 rounded-full border-primary/20 animate-pulse-glow-blue">
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">About Us</span>
+            </div>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
             Who We <span className="gradient-text glow-text">Are</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed">
             Zettaweb is a forward-thinking tech company dedicated to building innovative digital solutions 
             that empower businesses to thrive in the digital age. We combine creativity, technical excellence, 
             and strategic thinking to deliver exceptional results.

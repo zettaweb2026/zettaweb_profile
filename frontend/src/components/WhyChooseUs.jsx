@@ -3,12 +3,19 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { CheckCircle2, Zap, Shield, DollarSign, Clock, Headphones } from 'lucide-react';
 import { Card } from './ui/card';
+import useCountUp from '../hooks/useCountUp';
 
 export const WhyChooseUs = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.08,
   });
+
+  // #6 FIX: Animated counters for the stats banner
+  const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.4 });
+  const satisfactionCount = useCountUp('98%', 1600, statsInView);
+  const deliveryCount     = useCountUp('2x',  1200, statsInView);
+  const integrityCount    = useCountUp('100%', 1800, statsInView);
 
   const reasons = [
     {
@@ -79,15 +86,18 @@ export const WhyChooseUs = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-left mb-16 max-w-4xl"
         >
-          <div className="inline-block glass px-4 py-2 rounded-full mb-4 border-primary/20 animate-pulse-glow-blue">
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Why Choose Us</span>
+          <div className="relative inline-block mb-4">
+            <span className="absolute -top-6 left-0 text-xs font-semibold text-primary/45 tracking-wider">05</span>
+            <div className="inline-block glass px-4 py-2 rounded-full border-primary/20 animate-pulse-glow-blue">
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Why Choose Us</span>
+            </div>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
             Why Partner <span className="gradient-text glow-text">With Us</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed">
             We combine technical excellence with business understanding to deliver 
             solutions that drive real results.
           </p>
@@ -137,21 +147,21 @@ export const WhyChooseUs = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-20 max-w-4xl mx-auto"
         >
-          <Card className="glass p-8 rounded-3xl border-primary/20 shadow-2xl relative overflow-hidden group">
+          <Card className="glass p-8 rounded-3xl border-primary/20 shadow-2xl relative overflow-hidden group" ref={statsRef}>
             {/* Visual shine overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"></div>
             
             <div className="grid sm:grid-cols-3 gap-8 text-center relative z-10 divide-y sm:divide-y-0 sm:divide-x divide-muted/30">
               <div className="py-4 sm:py-0">
-                <div className="text-4xl sm:text-5xl font-black gradient-text glow-text mb-2 font-mono">98%</div>
+                <div className="text-4xl sm:text-5xl font-black gradient-text glow-text mb-2 font-mono">{satisfactionCount}</div>
                 <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-widest font-semibold">Client Satisfaction</div>
               </div>
               <div className="py-4 sm:py-0">
-                <div className="text-4xl sm:text-5xl font-black gradient-text glow-text-gold mb-2 font-mono">2x</div>
+                <div className="text-4xl sm:text-5xl font-black gradient-text glow-text-gold mb-2 font-mono">{deliveryCount}</div>
                 <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-widest font-semibold">Faster Delivery</div>
               </div>
               <div className="py-4 sm:py-0">
-                <div className="text-4xl sm:text-5xl font-black gradient-text glow-text mb-2 font-mono">100%</div>
+                <div className="text-4xl sm:text-5xl font-black gradient-text glow-text mb-2 font-mono">{integrityCount}</div>
                 <div className="text-xs sm:text-sm text-muted-foreground uppercase tracking-widest font-semibold">Code Integrity</div>
               </div>
             </div>
