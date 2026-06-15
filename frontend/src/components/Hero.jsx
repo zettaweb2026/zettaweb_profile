@@ -200,7 +200,7 @@ export const Hero = () => {
             >
               {/* Back Card: Cloud Infrastructures */}
               <motion.div 
-                style={{ transform: "translateZ(-40px) translateY(-25px) scale(0.9)" }}
+                style={{ z: -40, y: -25, scale: 0.9 }}
                 className="absolute inset-0 glass rounded-3xl border border-secondary/20 p-6 flex flex-col justify-between shadow-2xl backface-hidden"
               >
                 <div className="flex justify-between items-start">
@@ -220,7 +220,7 @@ export const Hero = () => {
 
               {/* Middle Card: AI Models */}
               <motion.div 
-                style={{ transform: "translateZ(-20px) translateY(-12px) scale(0.95)" }}
+                style={{ z: -20, y: -12, scale: 0.95 }}
                 className="absolute inset-0 glass rounded-3xl border border-primary/20 p-6 flex flex-col justify-between shadow-2xl backface-hidden"
               >
                 <div className="flex justify-between items-start">
@@ -240,7 +240,7 @@ export const Hero = () => {
 
               {/* Front Card: Web Portal */}
               <motion.div 
-                style={{ transform: "translateZ(10px)" }}
+                style={{ z: 10 }}
                 className="absolute inset-0 glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl border-primary/30 backface-hidden animate-pulse-glow-blue"
               >
                 <div className="flex justify-between items-start">
