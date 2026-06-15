@@ -178,6 +178,9 @@ module.exports = defineConfig({
     port: 3000,
     host: true,
   },
+  build: {
+    outDir: 'build',
+  },
   define: {
     // Preserve process.env compatibility in source code
     'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL || 'http://localhost:5000/api')
