@@ -75,7 +75,7 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background z-10"></div>
         <img
           src="/hero-bg.png"
-          alt="3D Abstract Future Background"
+          alt="ZettaWeb - AI Solutions, Cloud Technologies and Web Development Background"
           className="w-full h-full object-cover opacity-45 scale-105"
         />
         {/* Floating gradient blobs for 3D depth */}

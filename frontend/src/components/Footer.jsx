@@ -69,7 +69,7 @@ export const Footer = () => {
               <div className="overflow-hidden rounded-xl border border-primary/20 p-1 bg-background/50">
                 <img 
                   src="/logo.png" 
-                  alt="Zettaweb Logo" 
+                  alt="ZettaWeb - Best AI Solutions & Web Development Services Logo" 
                   className="h-10 w-10 object-contain rounded-lg"
                 />
               </div>

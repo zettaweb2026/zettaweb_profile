@@ -1,6 +1,7 @@
 User-agent: *
-Disallow: /admin
-Disallow: /login
-Disallow: /register
-Disallow: /access-denied
-Sitemap: https://www.zetta-web.in/sitemap.xml
+Disallow: /admin/
+Disallow: /login/
+Disallow: /register/
+Disallow: /access-denied/
+Allow: /
+Sitemap: https://www.zettaweb.in/sitemap.xml

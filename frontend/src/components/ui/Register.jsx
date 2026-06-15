@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./car
 import { Input } from "./input";
 import { Label } from "./label";
 import { API_BASE_URL, getFriendlyErrorMessage, parseApiResponse, saveAuthSession } from "../../lib/auth";
+import SEO from "../SEO";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -79,8 +80,14 @@ const Register = () => {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-20 text-foreground">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.18),transparent_34%),radial-gradient(circle_at_bottom_left,hsl(var(--secondary)/0.16),transparent_30%)]" />
+    <>
+      <SEO 
+        title="Admin Registration"
+        description="Register for a Zettaweb admin account to manage projects and updates."
+        url="https://www.zettaweb.in/register"
+      />
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-20 text-foreground">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.18),transparent_34%),radial-gradient(circle_at_bottom_left,hsl(var(--secondary)/0.16),transparent_30%)]" />
 
       <section className="relative z-10 grid w-full max-w-5xl items-center gap-10 lg:grid-cols-[1fr_460px]">
         <div className="hidden lg:block">
@@ -252,7 +259,8 @@ const Register = () => {
           </CardContent>
         </Card>
       </section>
-    </main>
+      </main>
+    </>
   );
 };
 
