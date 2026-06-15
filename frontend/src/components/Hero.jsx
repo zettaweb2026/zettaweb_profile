@@ -8,42 +8,29 @@ export const Hero = () => {
   const fullText = 'Building Digital Solutions for the Future';
   const [showCursor, setShowCursor] = useState(true);
 
-  // Mouse tracking for 3D card rotation (normalized -1 to 1)
+  // Mouse tracking for 3D card rotation
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springX = useSpring(mouseX, { stiffness: 100, damping: 18 });
-  const springY = useSpring(mouseY, { stiffness: 100, damping: 18 });
+  const rotateX = useTransform(mouseY, [-200, 200], [12, -12]);
+  const rotateY = useTransform(mouseX, [-200, 200], [-12, 12]);
 
-  const rotateX = useTransform(springY, [-1, 1], [15, -15]);
-  const rotateY = useTransform(springX, [-1, 1], [-15, 15]);
-
-  const [spotlightCoords, setSpotlightCoords] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
+  const springRotateX = useSpring(rotateX, { stiffness: 120, damping: 15 });
+  const springRotateY = useSpring(rotateY, { stiffness: 120, damping: 15 });
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
-    
-    // Calculate normalized coordinates (-1 to 1)
-    const x = ((e.clientX - rect.left) / width) * 2 - 1;
-    const y = ((e.clientY - rect.top) / height) * 2 - 1;
-    
-    mouseX.set(x);
-    mouseY.set(y);
-
-    setSpotlightCoords({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
-    setIsHovered(true);
+    const xVal = e.clientX - rect.left - width / 2;
+    const yVal = e.clientY - rect.top - height / 2;
+    mouseX.set(xVal);
+    mouseY.set(yVal);
   };
 
   const handleMouseLeave = () => {
     mouseX.set(0);
     mouseY.set(0);
-    setIsHovered(false);
   };
 
   useEffect(() => {
@@ -205,79 +192,41 @@ export const Hero = () => {
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               style={{
-                rotateX: rotateX,
-                rotateY: rotateY,
+                rotateX: springRotateX,
+                rotateY: springRotateY,
                 transformStyle: "preserve-3d",
-                boxShadow: isHovered
-                  ? "0 25px 50px -12px rgba(63, 167, 230, 0.35), 0 0 40px rgba(243, 191, 74, 0.15)"
-                  : "0 10px 30px -10px rgba(0, 0, 0, 0.7)",
               }}
-              className="w-80 h-[420px] relative rounded-3xl p-[1.5px] bg-gradient-to-br from-primary/30 via-slate-800/40 to-secondary/30 cursor-grab active:cursor-grabbing preserve-3d transition-all duration-300"
+              className="w-80 h-[420px] glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl border-primary/30 cursor-grab active:cursor-grabbing preserve-3d animate-pulse-glow-blue"
             >
-              {/* Dynamic spotlight edge/glow layer */}
-              <div
-                className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-500"
-                style={{
-                  opacity: isHovered ? 1 : 0,
-                  background: `radial-gradient(180px circle at ${spotlightCoords.x}px ${spotlightCoords.y}px, hsl(var(--primary)) 0%, hsl(var(--secondary)) 60%, transparent 100%)`,
-                }}
-              />
-
-              {/* Inner content container */}
-              <div
-                className="w-full h-full bg-[#0a0a0f]/90 backdrop-blur-xl rounded-[22px] p-6 flex flex-col justify-between relative z-10 preserve-3d"
-              >
-                {/* Subtle high-tech grid background pattern */}
-                <div 
-                  className="absolute inset-0 rounded-[22px] opacity-[0.03] pointer-events-none"
-                  style={{
-                    backgroundImage: `radial-gradient(hsl(var(--primary)) 1px, transparent 1px)`,
-                    backgroundSize: "16px 16px"
-                  }}
-                />
-
-                {/* Inner spotlight face glow */}
-                <div
-                  className="absolute inset-0 rounded-[22px] pointer-events-none transition-opacity duration-500"
-                  style={{
-                    opacity: isHovered ? 1 : 0,
-                    background: `radial-gradient(220px circle at ${spotlightCoords.x}px ${spotlightCoords.y}px, rgba(63, 167, 230, 0.15), transparent 80%)`,
-                  }}
-                />
-
-                {/* Header Section: translateZ(40px) */}
-                <div style={{ transform: "translateZ(40px)" }} className="flex justify-between items-start preserve-3d relative z-20">
-                  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/20 shadow-md shadow-primary/10">
-                    <Code className="w-5 h-5 text-primary" />
-                  </div>
-                  <span className="text-xs font-mono text-primary/80 tracking-wider">LAYER_01 // CORE_UI</span>
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                  <Code className="w-5 h-5 text-primary" />
                 </div>
-                
-                {/* Center Content Section: translateZ(30px) */}
-                <div style={{ transform: "translateZ(30px)" }} className="space-y-4 preserve-3d relative z-20">
-                  <h3 className="text-2xl font-bold text-foreground tracking-tight drop-shadow-md">Next-Gen Portals</h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-mono">
-                      <span className="text-muted-foreground">FPS Optimization</span>
-                      <span className="text-primary font-bold">60.00 FPS</span>
-                    </div>
-                    <div className="h-2 w-full bg-muted/30 rounded-full overflow-hidden p-[1px] border border-white/5">
-                      <motion.div 
-                        animate={{ width: ["0%", "100%", "98%"] }}
-                        transition={{ duration: 2, ease: "easeOut" }}
-                        className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
-                      />
-                    </div>
+                <span className="text-xs font-mono text-primary">LAYER_01 // CORE_UI</span>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-foreground">Next-Gen Portals</h3>
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">FPS Optimization</span>
+                    <span className="text-primary font-mono font-bold">60.00 FPS</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-muted/40 rounded-full overflow-hidden">
+                    <motion.div 
+                      animate={{ width: ["0%", "100%", "98%"] }}
+                      transition={{ duration: 2, ease: "easeOut" }}
+                      className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
+                    />
                   </div>
                 </div>
+              </div>
 
-                {/* Footer Section: translateZ(20px) */}
-                <div style={{ transform: "translateZ(20px)" }} className="flex items-center justify-between text-xs border-t border-muted/20 pt-4 preserve-3d relative z-20">
-                  <span className="text-muted-foreground font-medium font-mono">Status: ACTIVE</span>
-                  <div className="flex items-center gap-1.5 bg-green-500/10 px-2.5 py-1 rounded-full border border-green-500/20">
-                    <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
-                    <span className="font-mono text-[10px] text-green-400 font-bold">ONLINE</span>
-                  </div>
+              <div className="flex items-center justify-between text-xs border-t border-muted/20 pt-4">
+                <span className="text-muted-foreground font-medium">Status: ACTIVE</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping"></span>
+                  <span className="font-mono text-[10px] text-green-400">ONLINE</span>
                 </div>
               </div>
             </motion.div>
