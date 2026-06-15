@@ -179,7 +179,7 @@ module.exports = defineConfig({
     host: true,
   },
   build: {
-    outDir: 'build',
+    outDir: 'dist',
   },
   define: {
     // Preserve process.env compatibility in source code
