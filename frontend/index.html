@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <link rel="icon" type="image/png" href="logo.png" />
+        <link rel="icon" type="image/png" href="/logo.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <title>ZettaWeb | Building Digital Solutions for the Future</title>
@@ -15,7 +15,7 @@
         <meta property="og:site_name" content="ZettaWeb" />
         <meta property="og:title" content="ZettaWeb - Building Digital Solutions for the Future" />
         <meta property="og:description" content="ZettaWeb - Innovative tech startup delivering cutting-edge web development, AI/ML solutions, and cloud technologies." />
-        <meta property="og:image" content="%PUBLIC_URL%/logo.png" />
+        <meta property="og:image" content="/logo.png" />
 
         <script type="application/ld+json">
 {
@@ -58,16 +58,8 @@
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
-        <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+        
+        <script type="module" src="/src/index.jsx"></script>
         
         <script>
             !(function (t, e) {
@@ -102,7 +94,7 @@
                             (r =
                                 t.getElementsByTagName(
                                     "script",
-                                )[0]).parentNode.insertBefore(p, r);
+                                  )[0]).parentNode.insertBefore(p, r);
                         var u = e;
                         for (
                             void 0 !== a ? (u = e[a] = []) : (a = "posthog"),
