@@ -161,83 +161,38 @@ export const Hero = () => {
             </motion.div>
           </div>
 
-          {/* Right Column: Stacked 2D Cards */}
+          {/* Right Column: Single Front Card */}
           <div className="lg:col-span-5 hidden lg:flex items-center justify-center h-[550px]">
-            <div className="relative w-80 h-[420px]">
-              {/* Back Card: Cloud Infrastructures */}
-              <div 
-                style={{ transform: "translateY(-24px) scale(0.9)" }}
-                className="absolute inset-0 glass rounded-3xl border border-secondary/20 p-6 flex flex-col justify-between shadow-2xl z-10"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-                    <Server className="w-5 h-5 text-secondary" />
+            <div className="w-80 h-[420px] glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl border-primary/30 transition-transform duration-300 hover:-translate-y-2">
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                  <Code className="w-5 h-5 text-primary" />
+                </div>
+                <span className="text-xs font-mono text-primary">LAYER_01 // CORE_UI</span>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-foreground">Next-Gen Portals</h3>
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">FPS Optimization</span>
+                    <span className="text-primary font-mono font-bold">60.00 FPS</span>
                   </div>
-                  <span className="text-xs font-mono text-secondary">LAYER_03 // CLOUD</span>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-foreground">AWS & Docker</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Secure, automated, and auto-scaling CI/CD deployments.</p>
-                </div>
-                <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden">
-                  <div className="h-full bg-secondary w-4/5 rounded-full"></div>
+                  <div className="h-1.5 w-full bg-muted/40 rounded-full overflow-hidden">
+                    <motion.div 
+                      animate={{ width: ["0%", "100%", "98%"] }}
+                      transition={{ duration: 2, ease: "easeOut" }}
+                      className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Middle Card: AI Models */}
-              <div 
-                style={{ transform: "translateY(-12px) scale(0.95)" }}
-                className="absolute inset-0 glass rounded-3xl border border-primary/20 p-6 flex flex-col justify-between shadow-2xl z-20"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Cpu className="w-5 h-5 text-primary" />
-                  </div>
-                  <span className="text-xs font-mono text-primary">LAYER_02 // AI_ML</span>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-foreground">Intelligent Engines</h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Custom LLMs, neural classification, and forecasting.</p>
-                </div>
-                <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden">
-                  <div className="h-full bg-primary w-2/3 rounded-full"></div>
-                </div>
-              </div>
-
-              {/* Front Card: Web Portal */}
-              <div 
-                className="absolute inset-0 glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl border-primary/30 z-30 transition-transform duration-300 hover:-translate-y-2"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                    <Code className="w-5 h-5 text-primary" />
-                  </div>
-                  <span className="text-xs font-mono text-primary">LAYER_01 // CORE_UI</span>
-                </div>
-                
-                <div className="space-y-4">
-                  <h3 className="text-xl font-bold text-foreground">Next-Gen Portals</h3>
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">FPS Optimization</span>
-                      <span className="text-primary font-mono font-bold">60.00 FPS</span>
-                    </div>
-                    <div className="h-1.5 w-full bg-muted/40 rounded-full overflow-hidden">
-                      <motion.div 
-                        animate={{ width: ["0%", "100%", "98%"] }}
-                        transition={{ duration: 2, ease: "easeOut" }}
-                        className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-xs border-t border-muted/20 pt-4">
-                  <span className="text-muted-foreground font-medium">Status: ACTIVE</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping"></span>
-                    <span className="font-mono text-[10px] text-green-400">ONLINE</span>
-                  </div>
+              <div className="flex items-center justify-between text-xs border-t border-muted/20 pt-4">
+                <span className="text-muted-foreground font-medium">Status: ACTIVE</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping"></span>
+                  <span className="font-mono text-[10px] text-green-400">ONLINE</span>
                 </div>
               </div>
             </div>
