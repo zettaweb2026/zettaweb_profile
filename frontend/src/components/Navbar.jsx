@@ -86,7 +86,7 @@ export const Navbar = () => {
             <div className="relative overflow-hidden rounded-xl border border-primary/20 p-1 bg-background/50 group-hover:border-primary/50 transition-all duration-300">
               <img
                 src="/logo.png"
-                alt="Zettaweb Logo"
+                alt="ZettaWeb - Top Web Development & AI Solutions Company Logo"
                 className="h-10 w-10 object-contain rounded-lg group-hover:scale-110 transition-transform duration-300"
               />
             </div>

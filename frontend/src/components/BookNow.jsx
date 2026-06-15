@@ -21,6 +21,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { toast } from 'sonner';
+import SEO from './SEO';
 
 export const BookNow = () => {
   const navigate = useNavigate();
@@ -111,9 +112,15 @@ export const BookNow = () => {
   const inputStyle = "glass border-muted/30 focus:border-primary/70 focus:ring-0 focus:shadow-[0_0_15px_rgba(63,167,230,0.25)] rounded-xl py-6 bg-background/40 transition-all duration-300";
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-20 text-foreground">
-      {/* Ambient background glows */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.15),transparent_35%),radial-gradient(circle_at_bottom_right,hsl(var(--secondary)/0.12),transparent_35%)] pointer-events-none select-none" />
+    <>
+      <SEO 
+        title="Book a Consultation"
+        description="Book a project consultation with Zettaweb. We are ready to take your digital product to the next level."
+        url="https://www.zettaweb.in/book-now"
+      />
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-20 text-foreground">
+        {/* Ambient background glows */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.15),transparent_35%),radial-gradient(circle_at_bottom_right,hsl(var(--secondary)/0.12),transparent_35%)] pointer-events-none select-none" />
 
       <section className="relative z-10 w-full max-w-4xl">
         <div className="mb-8 flex items-center justify-between">
@@ -137,9 +144,9 @@ export const BookNow = () => {
         >
           <Card className="glass-card rounded-3xl border-primary/10 p-2 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl">
             <CardHeader className="space-y-3 text-center sm:text-left border-b border-white/5 pb-6">
-              <CardTitle className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
                 Book a <span className="gradient-text glow-text">Project Consultation</span>
-              </CardTitle>
+              </h1>
               <CardDescription className="text-sm sm:text-base text-muted-foreground max-w-2xl">
                 Ready to take your digital product to the next level? Fill out the booking request details below, 
                 and our specialized solutions architects will evaluate your project details.
@@ -328,7 +335,8 @@ export const BookNow = () => {
           </Card>
         </motion.div>
       </section>
-    </main>
+      </main>
+    </>
   );
 };
 
