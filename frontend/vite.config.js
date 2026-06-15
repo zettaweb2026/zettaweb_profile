@@ -71,45 +71,48 @@ const expressAdapter = (handler) => {
 };
 
 // Mount the custom middlewares (Visual Editing dev-server-setup + health-endpoints)
-try {
-  const setupDevServer = require('./plugins/visual-edits/dev-server-setup');
-  setupDevServer({}).setupMiddlewares([], devServerMock);
-} catch (e) {
-  console.warn('[Vite Setup] Visual edits dev server setup not loaded:', e.message);
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    const setupDevServer = require('./plugins/visual-edits/dev-server-setup');
+    setupDevServer({}).setupMiddlewares([], devServerMock);
+  } catch (e) {
+    console.warn('[Vite Setup] Visual edits dev server setup not loaded:', e.message);
+  }
+
+  try {
+    const setupHealthEndpoints = require('./plugins/health-check/health-endpoints');
+    const MockHealthPlugin = {
+      getStatus() {
+        return {
+          isHealthy: true,
+          state: 'success',
+          hasCompiled: true,
+          errorCount: 0,
+          warningCount: 0,
+          lastCompileTime: Date.now(),
+          lastSuccessTime: Date.now(),
+          compileDuration: 50,
+          totalCompiles: 1,
+          firstCompileTime: Date.now(),
+          errors: [],
+          warnings: []
+        };
+      },
+      getSimpleStatus() {
+        return {
+          state: 'success',
+          isHealthy: true,
+          errorCount: 0,
+          warningCount: 0
+        };
+      }
+    };
+    setupHealthEndpoints(devServerMock, MockHealthPlugin);
+  } catch (e) {
+    console.warn('[Vite Setup] Health check endpoints not loaded:', e.message);
+  }
 }
 
-try {
-  const setupHealthEndpoints = require('./plugins/health-check/health-endpoints');
-  const MockHealthPlugin = {
-    getStatus() {
-      return {
-        isHealthy: true,
-        state: 'success',
-        hasCompiled: true,
-        errorCount: 0,
-        warningCount: 0,
-        lastCompileTime: Date.now(),
-        lastSuccessTime: Date.now(),
-        compileDuration: 50,
-        totalCompiles: 1,
-        firstCompileTime: Date.now(),
-        errors: [],
-        warnings: []
-      };
-    },
-    getSimpleStatus() {
-      return {
-        state: 'success',
-        isHealthy: true,
-        errorCount: 0,
-        warningCount: 0
-      };
-    }
-  };
-  setupHealthEndpoints(devServerMock, MockHealthPlugin);
-} catch (e) {
-  console.warn('[Vite Setup] Health check endpoints not loaded:', e.message);
-}
 
 // Vite plugin to dispatch incoming requests to mapped express-like endpoints
 const visualAndHealthPlugin = () => {
@@ -167,7 +170,7 @@ module.exports = defineConfig({
         plugins: babelPlugins,
       }
     }),
-    visualAndHealthPlugin()
+    ...(process.env.NODE_ENV !== 'production' ? [visualAndHealthPlugin()] : [])
   ],
   resolve: {
     alias: {
