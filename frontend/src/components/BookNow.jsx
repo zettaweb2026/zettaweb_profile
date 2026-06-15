@@ -116,7 +116,7 @@ export const BookNow = () => {
       <SEO 
         title="Book a Consultation"
         description="Book a project consultation with Zettaweb. We are ready to take your digital product to the next level."
-        url="https://www.zettaweb.in/book-now"
+        url="https://www.zetta-web.in/book-now"
       />
       <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-20 text-foreground">
         {/* Ambient background glows */}

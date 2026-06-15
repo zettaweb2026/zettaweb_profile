@@ -54,7 +54,7 @@ const Home = () => {
         title="AI Solutions, Web Development & Cloud Technologies"
         description="ZettaWeb is a top software development company providing premium web development, AI solutions, and cloud services for modern businesses."
         keywords="AI Solutions, Web Development, Cloud Technologies, Software Development Company, Tech Startup"
-        url="https://www.zettaweb.in/"
+        url="https://www.zetta-web.in/"
         schema={[organizationSchema, localBusinessSchema, serviceSchema, faqSchema]}
       />
       <ParticleBackground />

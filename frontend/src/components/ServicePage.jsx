@@ -7,11 +7,11 @@ import { serviceSchema, breadcrumbSchema } from '../lib/schemas';
 import { Link } from 'react-router-dom';
 
 const ServicePage = ({ title, heading, description, keywords, slug, content }) => {
-  const url = `https://www.zettaweb.in/services/${slug}`;
+  const url = `https://www.zetta-web.in/services/${slug}`;
 
   const breadcrumbs = [
-    { name: "Home", url: "https://www.zettaweb.in/" },
-    { name: "Services", url: "https://www.zettaweb.in/#services" },
+    { name: "Home", url: "https://www.zetta-web.in/" },
+    { name: "Services", url: "https://www.zetta-web.in/#services" },
     { name: title, url: url }
   ];
 

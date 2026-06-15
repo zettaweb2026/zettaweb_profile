@@ -2,8 +2,8 @@ export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "ZettaWeb",
-  "url": "https://www.zettaweb.in/",
-  "logo": "https://www.zettaweb.in/logo.png",
+  "url": "https://www.zetta-web.in/",
+  "logo": "https://www.zetta-web.in/logo.png",
   "sameAs": [
     "https://www.facebook.com/zettaweb",
     "https://twitter.com/zettaweb",
@@ -15,8 +15,8 @@ export const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "name": "ZettaWeb",
-  "image": "https://www.zettaweb.in/logo.png",
-  "url": "https://www.zettaweb.in/",
+  "image": "https://www.zetta-web.in/logo.png",
+  "url": "https://www.zetta-web.in/",
   "telephone": "+919674171451",
   "priceRange": "$$",
   "address": {

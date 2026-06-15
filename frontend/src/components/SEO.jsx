@@ -11,7 +11,7 @@ const SEO = ({
   type = 'website' 
 }) => {
   const siteName = "ZettaWeb";
-  const defaultImage = "https://www.zettaweb.in/logo.png";
+  const defaultImage = "https://www.zetta-web.in/logo.png";
   
   return (
     <Helmet>

@@ -84,7 +84,7 @@ const Register = () => {
       <SEO 
         title="Admin Registration"
         description="Register for a Zettaweb admin account to manage projects and updates."
-        url="https://www.zettaweb.in/register"
+        url="https://www.zetta-web.in/register"
       />
       <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-20 text-foreground">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.18),transparent_34%),radial-gradient(circle_at_bottom_left,hsl(var(--secondary)/0.16),transparent_30%)]" />

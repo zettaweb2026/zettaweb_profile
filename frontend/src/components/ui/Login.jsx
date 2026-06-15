@@ -77,7 +77,7 @@ const Login = () => {
       <SEO 
         title="Admin Login"
         description="Login to the Zettaweb admin dashboard to manage projects and updates."
-        url="https://www.zettaweb.in/admin/login"
+        url="https://www.zetta-web.in/admin/login"
       />
       <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-20 text-foreground">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.18),transparent_34%),radial-gradient(circle_at_bottom_right,hsl(var(--secondary)/0.16),transparent_30%)]" />
