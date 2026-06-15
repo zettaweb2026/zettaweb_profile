@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { ArrowRight, Code, Zap, Globe, Cpu, Database, Server } from 'lucide-react';
 
@@ -7,16 +7,6 @@ export const Hero = () => {
   const [text, setText] = useState('');
   const fullText = 'Building Digital Solutions for the Future';
   const [showCursor, setShowCursor] = useState(true);
-
-  // Mouse tracking for 3D card deck rotation
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const rotateX = useTransform(mouseY, [-200, 200], [12, -12]);
-  const rotateY = useTransform(mouseX, [-200, 200], [-12, 12]);
-
-  const springRotateX = useSpring(rotateX, { stiffness: 120, damping: 15 });
-  const springRotateY = useSpring(rotateY, { stiffness: 120, damping: 15 });
 
   useEffect(() => {
     let index = 0;
@@ -38,21 +28,6 @@ export const Hero = () => {
       clearInterval(cursorInterval);
     };
   }, []);
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const xVal = e.clientX - rect.left - width / 2;
-    const yVal = e.clientY - rect.top - height / 2;
-    mouseX.set(xVal);
-    mouseY.set(yVal);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
 
   const scrollToSection = (sectionId) => {
     const element = document.querySelector(sectionId);
@@ -186,22 +161,13 @@ export const Hero = () => {
             </motion.div>
           </div>
 
-          {/* Right Column: Interactive 3D Card Stack */}
-          <div className="lg:col-span-5 hidden lg:flex items-center justify-center perspective-1000 h-[600px]">
-            <motion.div
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              style={{
-                rotateX: springRotateX,
-                rotateY: springRotateY,
-                transformStyle: "preserve-3d",
-              }}
-              className="relative w-80 h-[420px] cursor-grab active:cursor-grabbing preserve-3d"
-            >
+          {/* Right Column: Stacked 2D Cards */}
+          <div className="lg:col-span-5 hidden lg:flex items-center justify-center h-[550px]">
+            <div className="relative w-80 h-[420px]">
               {/* Back Card: Cloud Infrastructures */}
-              <motion.div 
-                style={{ z: -40, y: -25, scale: 0.9 }}
-                className="absolute inset-0 glass rounded-3xl border border-secondary/20 p-6 flex flex-col justify-between shadow-2xl backface-hidden"
+              <div 
+                style={{ transform: "translateY(-24px) scale(0.9)" }}
+                className="absolute inset-0 glass rounded-3xl border border-secondary/20 p-6 flex flex-col justify-between shadow-2xl z-10"
               >
                 <div className="flex justify-between items-start">
                   <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
@@ -216,12 +182,12 @@ export const Hero = () => {
                 <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden">
                   <div className="h-full bg-secondary w-4/5 rounded-full"></div>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Middle Card: AI Models */}
-              <motion.div 
-                style={{ z: -20, y: -12, scale: 0.95 }}
-                className="absolute inset-0 glass rounded-3xl border border-primary/20 p-6 flex flex-col justify-between shadow-2xl backface-hidden"
+              <div 
+                style={{ transform: "translateY(-12px) scale(0.95)" }}
+                className="absolute inset-0 glass rounded-3xl border border-primary/20 p-6 flex flex-col justify-between shadow-2xl z-20"
               >
                 <div className="flex justify-between items-start">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -236,12 +202,11 @@ export const Hero = () => {
                 <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden">
                   <div className="h-full bg-primary w-2/3 rounded-full"></div>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Front Card: Web Portal */}
-              <motion.div 
-                style={{ z: 10 }}
-                className="absolute inset-0 glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl border-primary/30 backface-hidden animate-pulse-glow-blue"
+              <div 
+                className="absolute inset-0 glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl border-primary/30 z-30 transition-transform duration-300 hover:-translate-y-2"
               >
                 <div className="flex justify-between items-start">
                   <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
@@ -274,8 +239,8 @@ export const Hero = () => {
                     <span className="font-mono text-[10px] text-green-400">ONLINE</span>
                   </div>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
