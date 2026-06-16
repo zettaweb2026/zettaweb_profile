@@ -32,12 +32,15 @@ const authenticateUser = async (req, res, next) => {
       });
     }
 
+    const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'support@zetta-web.in').trim().toLowerCase();
+    const isSuperAdmin = user.email.toLowerCase().trim() === SUPER_ADMIN_EMAIL;
+
     req.user = {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      role: user.role,
-      permissions: user.permissions || [],
+      role: isSuperAdmin ? 'admin' : user.role,
+      permissions: isSuperAdmin ? ['projects', 'testimonials', 'services', 'techStack', 'aboutValues', 'aboutTimeline'] : (user.permissions || []),
     };
 
     next();

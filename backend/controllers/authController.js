@@ -14,14 +14,20 @@ const signToken = (user) => {
   );
 };
 
-const sanitizeUser = (user) => ({
-  id: user._id.toString(),
-  name: user.name,
-  email: user.email,
-  role: user.role,
-  permissions: user.permissions || [],
-  createdAt: user.createdAt,
-});
+const sanitizeUser = (user) => {
+  const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'support@zetta-web.in').trim().toLowerCase();
+  const isSuperAdmin = user.email.toLowerCase().trim() === SUPER_ADMIN_EMAIL;
+
+  return {
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    role: isSuperAdmin ? 'admin' : user.role,
+    permissions: isSuperAdmin ? ['projects', 'testimonials', 'services', 'techStack', 'aboutValues', 'aboutTimeline'] : (user.permissions || []),
+    createdAt: user.createdAt,
+    isSuperAdmin,
+  };
+};
 
 const register = async (req, res) => {
   try {

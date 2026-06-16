@@ -16,7 +16,7 @@ const AdminPanel = () => {
   const [aboutTimeline, setAboutTimeline] = useState([]);
   const [admins, setAdmins] = useState([]);
 
-  const isSuperAdmin = currentUser && currentUser.email === 'support@zetta-web.in';
+  const isSuperAdmin = currentUser && (currentUser.isSuperAdmin || currentUser.email === 'support@zetta-web.in');
   
   const allTabs = [
     { id: 'projects', label: 'Projects', icon: 'Briefcase' },
