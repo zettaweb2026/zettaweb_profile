@@ -136,7 +136,7 @@ const getAllUsers = async (req, res) => {
     const users = await User.find({}, '-password');
     return res.json({
       success: true,
-      users,
+      users: users.map(user => sanitizeUser(user)),
     });
   } catch (error) {
     return res.status(500).json({

@@ -41,6 +41,7 @@ const authenticateUser = async (req, res, next) => {
       email: user.email,
       role: isSuperAdmin ? 'admin' : user.role,
       permissions: isSuperAdmin ? ['projects', 'testimonials', 'services', 'techStack', 'aboutValues', 'aboutTimeline'] : (user.permissions || []),
+      isSuperAdmin,
     };
 
     next();
