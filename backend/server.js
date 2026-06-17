@@ -7,6 +7,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const clientRoutes = require('./routes/clientRoutes');
 const Models = require('./models/contentModels');
 const { authenticateUser, authorizeAdmin, authorizeResource } = require('./middleware/authMiddleware');
 
@@ -94,6 +95,7 @@ app.use('/api', connectDb);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/clients', clientRoutes);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
