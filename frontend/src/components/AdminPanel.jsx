@@ -41,6 +41,8 @@ const AdminPanel = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
 
   // Auto-redirect activeTab if not allowed
   useEffect(() => {
@@ -130,6 +132,37 @@ const AdminPanel = () => {
   const handleLogout = () => {
     clearAuthSession();
     navigate('/admin/login', { replace: true });
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    setUploadingImage(true);
+    setError('');
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/upload`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setUploadedImageUrl(data.url);
+        setSuccess('Image uploaded successfully!');
+      } else {
+        setError(data.message || 'Image upload failed');
+      }
+    } catch (err) {
+      setError('Image upload failed: ' + err.message);
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleDelete = async (resource, id) => {         //for deleting data
@@ -304,6 +337,7 @@ const AdminPanel = () => {
                 onClick={() => { 
                   setActiveTab(tab.id); 
                   setEditingItem(null); 
+                  setUploadedImageUrl('');
                   setError(''); 
                   setSuccess(''); 
                 }}
@@ -364,7 +398,7 @@ const AdminPanel = () => {
             </div>
             {!editingItem && (
               <Button 
-                onClick={() => setEditingItem({})} 
+                onClick={() => { setEditingItem({}); setUploadedImageUrl(''); }} 
                 className="bg-primary hover:bg-primary/95 text-white flex items-center space-x-1.5 px-5 py-2.5 rounded-xl transition-all shadow-md shadow-primary/10 hover:scale-[1.02] font-semibold"
               >
                 <LucideIcons.Plus size={16} />
@@ -386,8 +420,26 @@ const AdminPanel = () => {
                     <input name="category" defaultValue={editingItem.category} placeholder="e.g. Web Development" required className={inputStyle} />
                   </div>
                   <div>
-                    <label className={labelStyle}>Image URL</label>
-                    <input name="image" defaultValue={editingItem.image} placeholder="e.g. /images/project1.jpg" required className={inputStyle} />
+                    <label className={labelStyle}>Project Image</label>
+                    <div className="flex flex-col space-y-3">
+                      <div className="flex items-center justify-center w-full">
+                        <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-white/10 border-dashed rounded-xl cursor-pointer bg-black/40 hover:bg-white/5 hover:border-primary/50 transition-all">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            {uploadingImage ? (
+                              <LucideIcons.Loader2 className="w-6 h-6 text-primary mb-2 animate-spin" />
+                            ) : (
+                              <LucideIcons.CloudUpload className="w-6 h-6 text-muted-foreground mb-2" />
+                            )}
+                            <p className="text-xs text-muted-foreground font-semibold">
+                              {uploadingImage ? "Uploading to Cloudinary..." : "Click or drag to upload image"}
+                               <p className="text-xs text-muted-foreground">Max Img Size - 10MB</p>
+                            </p>
+                          </div>
+                          <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} disabled={uploadingImage} />
+                        </label>
+                      </div>
+                      <input name="image" value={uploadedImageUrl || ''} onChange={(e) => setUploadedImageUrl(e.target.value)} placeholder="e.g. /images/project1.jpg or generated URL" required className={inputStyle} />
+                    </div>
                   </div>
                   <div className="md:col-span-2">
                     <label className={labelStyle}>Description</label>
@@ -707,7 +759,7 @@ const AdminPanel = () => {
                       {(activeTab !== 'admins' || !item.isSuperAdmin) && (
                         <Button 
                           size="sm" 
-                          onClick={() => setEditingItem(item)} 
+                          onClick={() => { setEditingItem(item); setUploadedImageUrl(item.image || item.avatar || ''); }} 
                           className="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold rounded-xl px-4 py-1.5 transition-all flex items-center space-x-1"
                         >
                           <LucideIcons.Edit size={14} />
