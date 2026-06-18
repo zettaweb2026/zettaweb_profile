@@ -5,17 +5,17 @@ const COLLECTION_NAME = 'clients';
 class ClientService {
   static async createClient(clientData) {
     try {
-      const { name, email, phone } = clientData;
+      const { companyName, email, phone, status } = clientData;
 
-      if (!name || !email || !phone) {
-        throw new Error('Name, email, and phone are required');
+      if (!companyName || !email || !phone) {
+        throw new Error('Company Name, email, and phone are required');
       }
 
       const client = {
-        name: name.trim(),
+        companyName: companyName.trim(),
         email: email.trim().toLowerCase(),
         phone: phone.trim(),
-        called: false,
+        status: status || 'Not Received',
         createdAt: new Date(),
       };
 
@@ -23,6 +23,27 @@ class ClientService {
       return { id: docRef.id, ...client };
     } catch (error) {
       throw new Error(`Failed to create client: ${error.message}`);
+    }
+  }
+
+  static async updateClient(clientId, updateData) {
+    try {
+      if (!clientId) throw new Error('Client ID is required');
+      const clientRef = db.collection(COLLECTION_NAME).doc(clientId);
+      const clientDoc = await clientRef.get();
+      if (!clientDoc.exists) return null;
+
+      const { companyName, email, phone, status } = updateData;
+      const updated = { updatedAt: new Date() };
+      if (companyName) updated.companyName = companyName.trim();
+      if (email) updated.email = email.trim().toLowerCase();
+      if (phone) updated.phone = phone.trim();
+      if (status) updated.status = status;
+
+      await clientRef.update(updated);
+      return { id: clientDoc.id, ...clientDoc.data(), ...updated };
+    } catch (error) {
+      throw new Error(`Failed to update client: ${error.message}`);
     }
   }
 
@@ -52,22 +73,6 @@ class ClientService {
     }
   }
 
-  static async updateCallStatus(clientId) {
-    try {
-      if (!clientId) throw new Error('Client ID is required');
-      const clientRef = db.collection(COLLECTION_NAME).doc(clientId);
-      const clientDoc = await clientRef.get();
-      if (!clientDoc.exists) return null;
-
-      const current = clientDoc.data().called || false;
-      const updated = { called: !current, updatedAt: new Date() };
-      await clientRef.update(updated);
-      return { id: clientDoc.id, ...clientDoc.data(), ...updated };
-    } catch (error) {
-      throw new Error(`Failed to update call status: ${error.message}`);
-    }
-  }
-
   static async deleteClient(clientId) {
     try {
       if (!clientId) throw new Error('Client ID is required');
@@ -78,24 +83,6 @@ class ClientService {
       return true;
     } catch (error) {
       throw new Error(`Failed to delete client: ${error.message}`);
-    }
-  }
-
-  static async getClientsByCallStatus(called) {
-    try {
-      const baseQuery = db.collection(COLLECTION_NAME).where('called', '==', called);
-      try {
-        const snapshot = await baseQuery.orderBy('createdAt', 'desc').get();
-        if (snapshot.empty) return [];
-        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      } catch (err) {
-        // Fallback when composite index required
-        const snapshot = await baseQuery.get();
-        if (snapshot.empty) return [];
-        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      }
-    } catch (error) {
-      throw new Error(`Failed to get clients by call status: ${error.message}`);
     }
   }
 

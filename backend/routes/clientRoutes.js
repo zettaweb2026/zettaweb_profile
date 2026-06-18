@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   createClient,
   getAllClients,
-  updateCallStatus,
+  updateClient,
   deleteClient,
 } = require('../controllers/clientController');
 
@@ -14,7 +14,7 @@ const {
 
 router.post('/', createClient);
 router.get('/', getAllClients);
-router.patch('/:id/call-status', updateCallStatus);
+router.put('/:id', updateClient);
 router.delete('/:id', deleteClient);
 
 module.exports = router;
