@@ -9,6 +9,96 @@ import { toast } from 'sonner';
 
 import { fallbackProjects } from '../lib/fallbackData';
 
+const ProjectCard = ({ project, handleLinkClick }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxLength = 120;
+  const needsExpansion = project.description && project.description.length > maxLength;
+  const displayDescription = isExpanded 
+    ? project.description 
+    : (needsExpansion ? project.description.slice(0, maxLength) + '...' : project.description);
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9, y: 15 }}
+      transition={{ duration: 0.45 }}
+      className="h-full"
+    >
+      <Card className="glass-card overflow-hidden h-full flex flex-col justify-between group rounded-3xl border-muted/20 hover:border-primary/30">
+        <div>
+          {/* Project Header Image */}
+          <div className="relative h-52 overflow-hidden select-none">
+            <img
+              src={project.image}
+              alt={project.title}
+              className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+              loading="lazy"
+            />
+            {/* #4 FIX: Reduced overlay opacity so project image is actually visible */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent"></div>
+            <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground border-none font-bold text-[10px] tracking-widest uppercase">
+              {project.category}
+            </Badge>
+          </div>
+
+          {/* Content Section */}
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+              {project.title}
+            </h3>
+            <p className="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed transition-all">
+              {displayDescription}
+              {needsExpansion && (
+                <button
+                  onClick={(e) => { e.preventDefault(); setIsExpanded(!isExpanded); }}
+                  className="ml-1.5 text-primary hover:text-primary/80 font-bold transition-colors inline-block"
+                >
+                  {isExpanded ? 'Read less' : 'Read more'}
+                </button>
+              )}
+            </p>
+
+            {/* Technologies Chips */}
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {project.technologies.map((tech) => (
+                <span
+                  key={tech}
+                  className="text-[10px] font-mono font-medium px-2.5 py-0.5 bg-primary/10 text-primary rounded-full border border-primary/10"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="px-6 pb-6 pt-3 flex gap-3">
+          <Button
+            size="sm"
+            className="flex-grow bg-primary hover:bg-primary/95 text-primary-foreground font-bold rounded-xl shadow-md border-none flex items-center justify-center gap-1.5"
+            onClick={(e) => handleLinkClick(e, project.demoLink, 'Interactive demo', project.title)}
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>Demo</span>
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex-grow glass border-primary/20 hover:bg-primary/5 rounded-xl font-bold flex items-center justify-center gap-1.5"
+            onClick={(e) => handleLinkClick(e, project.githubLink, 'Source code', project.title)}
+          >
+            <Github className="w-3.5 h-3.5" />
+            <span>Code</span>
+          </Button>
+        </div>
+      </Card>
+    </motion.div>
+  );
+};
+
 export const Projects = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -130,77 +220,7 @@ export const Projects = () => {
         >
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
-              <motion.div
-                key={project.title}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9, y: 15 }}
-                transition={{ duration: 0.45 }}
-                className="h-full"
-              >
-                <Card className="glass-card overflow-hidden h-full flex flex-col justify-between group rounded-3xl border-muted/20 hover:border-primary/30">
-                  <div>
-                    {/* Project Header Image */}
-                    <div className="relative h-52 overflow-hidden select-none">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                      {/* #4 FIX: Reduced overlay opacity so project image is actually visible */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent"></div>
-                      <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground border-none font-bold text-[10px] tracking-widest uppercase">
-                        {project.category}
-                      </Badge>
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
-                        {project.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed">
-                        {project.description}
-                      </p>
-
-                      {/* Technologies Chips */}
-                      <div className="flex flex-wrap gap-1.5 mb-2">
-                        {project.technologies.map((tech) => (
-                          <span
-                            key={tech}
-                            className="text-[10px] font-mono font-medium px-2.5 py-0.5 bg-primary/10 text-primary rounded-full border border-primary/10"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="px-6 pb-6 pt-3 flex gap-3">
-                    <Button
-                      size="sm"
-                      className="flex-grow bg-primary hover:bg-primary/95 text-primary-foreground font-bold rounded-xl shadow-md border-none flex items-center justify-center gap-1.5"
-                      onClick={(e) => handleLinkClick(e, project.demoLink, 'Interactive demo', project.title)}
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>Demo</span>
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="flex-grow glass border-primary/20 hover:bg-primary/5 rounded-xl font-bold flex items-center justify-center gap-1.5"
-                      onClick={(e) => handleLinkClick(e, project.githubLink, 'Source code', project.title)}
-                    >
-                      <Github className="w-3.5 h-3.5" />
-                      <span>Code</span>
-                    </Button>
-                  </div>
-                </Card>
-              </motion.div>
+              <ProjectCard key={project.title} project={project} handleLinkClick={handleLinkClick} />
             ))}
           </AnimatePresence>
         </motion.div>
