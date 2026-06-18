@@ -1,0 +1,70 @@
+{
+  "info": {
+    "name": "Zetta Web Clients API",
+    "_postman_id": "zetta-clients-api",
+    "description": "Collection for testing Clients endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Client",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"phone\": \"1234567890\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/clients",
+          "host": ["{{base_url}}"],
+          "path": ["api","clients"]
+        }
+      }
+    },
+    {
+      "name": "List Clients",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/clients",
+          "host": ["{{base_url}}"],
+          "path": ["api","clients"]
+        }
+      }
+    },
+    {
+      "name": "Toggle Call Status",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{base_url}}/api/clients/:clientId/call-status",
+          "host": ["{{base_url}}"],
+          "path": ["api","clients",":clientId","call-status"],
+          "variable": [
+            { "key": "clientId", "value": "<clientId>" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Client",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}/api/clients/:clientId",
+          "host": ["{{base_url}}"],
+          "path": ["api","clients",":clientId"],
+          "variable": [
+            { "key": "clientId", "value": "<clientId>" }
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000" }
+  ]
+}
