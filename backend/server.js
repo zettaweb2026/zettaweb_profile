@@ -44,6 +44,15 @@ const getFallbackResource = (resource) => {
 app.use(cors());
 app.use(express.json());
 
+// Prevent browser caching for all API responses so that the dashboard 
+// always fetches the latest data instead of serving stale cached responses.
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 // Transporter cache & pool configuration
 let transporterInstance = null;
 const getTransporter = () => {
