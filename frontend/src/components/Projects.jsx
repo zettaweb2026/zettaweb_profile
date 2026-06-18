@@ -11,11 +11,19 @@ import { fallbackProjects } from '../lib/fallbackData';
 
 const ProjectCard = ({ project, handleLinkClick }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isTechExpanded, setIsTechExpanded] = useState(false);
+  
   const maxLength = 120;
   const needsExpansion = project.description && project.description.length > maxLength;
   const displayDescription = isExpanded 
     ? project.description 
     : (needsExpansion ? project.description.slice(0, maxLength) + '...' : project.description);
+
+  const maxTech = 3;
+  const needsTechExpansion = project.technologies && project.technologies.length > maxTech;
+  const displayTechnologies = isTechExpanded
+    ? project.technologies
+    : (project.technologies ? project.technologies.slice(0, maxTech) : []);
 
   return (
     <motion.div
@@ -62,7 +70,7 @@ const ProjectCard = ({ project, handleLinkClick }) => {
 
             {/* Technologies Chips */}
             <div className="flex flex-wrap gap-1.5 mb-2">
-              {project.technologies.map((tech) => (
+              {displayTechnologies.map((tech) => (
                 <span
                   key={tech}
                   className="text-[10px] font-mono font-medium px-2.5 py-0.5 bg-primary/10 text-primary rounded-full border border-primary/10"
@@ -70,6 +78,14 @@ const ProjectCard = ({ project, handleLinkClick }) => {
                   {tech}
                 </span>
               ))}
+              {needsTechExpansion && (
+                <button
+                  onClick={(e) => { e.preventDefault(); setIsTechExpanded(!isTechExpanded); }}
+                  className="text-[10px] font-mono font-medium px-2.5 py-0.5 bg-white/5 text-muted-foreground hover:text-white rounded-full border border-white/10 hover:border-white/20 transition-colors cursor-pointer"
+                >
+                  {isTechExpanded ? 'Show less' : `+${project.technologies.length - maxTech} more`}
+                </button>
+              )}
             </div>
           </div>
         </div>
