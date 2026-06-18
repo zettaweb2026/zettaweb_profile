@@ -12,11 +12,11 @@ import { fallbackProjects } from '../lib/fallbackData';
 const ProjectCard = ({ project, handleLinkClick }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isTechExpanded, setIsTechExpanded] = useState(false);
-  
+
   const maxLength = 120;
   const needsExpansion = project.description && project.description.length > maxLength;
-  const displayDescription = isExpanded 
-    ? project.description 
+  const displayDescription = isExpanded
+    ? project.description
     : (needsExpansion ? project.description.slice(0, maxLength) + '...' : project.description);
 
   const maxTech = 3;
@@ -135,24 +135,61 @@ export const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // React.useEffect(() => {
+  //   const fetchProjects = async () => {
+  //     try {
+  //       const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/projects`);
+  //       const data = await response.json();
+  //       if (Array.isArray(data) && data.length > 0) {
+  //         setProjects(data);
+  //       } else {
+  //         setProjects(fallbackProjects);
+  //       }
+  //     } catch (error) {
+  //       console.error('Failed to fetch projects, using frontend fallback:', error);
+  //       setProjects(fallbackProjects);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchProjects();
+  // }, []);
+
   React.useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/projects`);
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/projects`
+        );
+
         const data = await response.json();
+
         if (Array.isArray(data) && data.length > 0) {
           setProjects(data);
         } else {
           setProjects(fallbackProjects);
         }
       } catch (error) {
-        console.error('Failed to fetch projects, using frontend fallback:', error);
+        console.error(
+          'Failed to fetch projects, using frontend fallback:',
+          error
+        );
         setProjects(fallbackProjects);
       } finally {
         setLoading(false);
       }
     };
+
+    // Initial load
     fetchProjects();
+
+    // Refresh every 10 seconds
+    const interval = setInterval(() => {
+      fetchProjects();
+    }, 10000);
+
+    // Cleanup
+    return () => clearInterval(interval);
   }, []);
 
   const filters = ['All', 'Web', 'AI', 'Automation'];
@@ -202,7 +239,7 @@ export const Projects = () => {
             <Filter className="w-4 h-4 text-primary" />
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Filter:</span>
           </div>
-          
+
           <div className="flex flex-wrap p-1.5 glass rounded-2xl border border-muted/20">
             {filters.map((filter) => {
               const isActive = activeFilter === filter;
@@ -210,9 +247,8 @@ export const Projects = () => {
                 <button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
-                  className={`relative px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors duration-300 rounded-xl ${
-                    isActive ? 'text-primary-foreground font-black' : 'text-foreground/70 hover:text-foreground'
-                  }`}
+                  className={`relative px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors duration-300 rounded-xl ${isActive ? 'text-primary-foreground font-black' : 'text-foreground/70 hover:text-foreground'
+                    }`}
                 >
                   <span className="relative z-10">{filter}</span>
                   {/* Glowing layout slide indicator */}
@@ -230,8 +266,8 @@ export const Projects = () => {
         </motion.div>
 
         {/* Projects Cards Grid */}
-        <motion.div 
-          layout 
+        <motion.div
+          layout
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           <AnimatePresence mode="popLayout">
