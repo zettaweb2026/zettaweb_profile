@@ -1,0 +1,18 @@
+[
+  {
+    "id": "mock-client-1",
+    "companyName": "Acme Corp",
+    "email": "acme@example.com",
+    "phone": "123-456-7890",
+    "status": "Not Received",
+    "createdAt": "2026-06-18T16:23:37.610Z"
+  },
+  {
+    "id": "mock-client-2",
+    "companyName": "Globex Corp",
+    "email": "globex@example.com",
+    "phone": "987-654-3210",
+    "status": "In Discussion",
+    "createdAt": "2026-06-17T16:23:37.610Z"
+  }
+]

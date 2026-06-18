@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
 import { clearAuthSession, getAuthHeaders, getStoredUser, parseApiResponse } from '../lib/auth';
 import * as LucideIcons from 'lucide-react';
 

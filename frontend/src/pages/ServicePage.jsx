@@ -1,8 +1,8 @@
 import React from 'react';
-import SEO from './SEO';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import ParticleBackground from './ParticleBackground';
+import SEO from '../components/SEO';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ParticleBackground from '../components/ParticleBackground';
 import { serviceSchema, breadcrumbSchema } from '../lib/schemas';
 import { Link } from 'react-router-dom';
 

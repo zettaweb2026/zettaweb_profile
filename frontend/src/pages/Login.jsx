@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AlertCircle, Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
 
-import { Button } from "./button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
-import { Input } from "./input";
-import { Label } from "./label";
-import { API_BASE_URL, getFriendlyErrorMessage, parseApiResponse, saveAuthSession } from "../../lib/auth";
-import SEO from "../SEO";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { API_BASE_URL, getFriendlyErrorMessage, parseApiResponse, saveAuthSession } from "../lib/auth";
+import SEO from "../components/SEO";
 
 const Login = () => {
   const navigate = useNavigate();

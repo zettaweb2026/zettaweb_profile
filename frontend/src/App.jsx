@@ -1,29 +1,45 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Navigate, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import SectionDivider from './components/SectionDivider';
-import Services from './components/Services';
+import ServicesPreview from './components/ServicesPreview';
+import ProjectsPreview from './components/ProjectsPreview';
+import TestimonialsPreview from './components/TestimonialsPreview';
+import ContactPreview from './components/ContactPreview';
 import TechStack from './components/TechStack';
-import Projects from './components/Projects';
 import WhyChooseUs from './components/WhyChooseUs';
-import Testimonials from './components/Testimonials';
-import Contact from './components/Contact';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import ParticleBackground from './components/ParticleBackground';
 import WhatsAppButton from './components/WhatsAppButton';
-import AdminPanel from './components/AdminPanel';
-import AccessDenied from './components/AccessDenied';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
-import Login from './components/ui/Login';
-import Register from './components/ui/Register';
-import BookNow from './components/BookNow';
 import SEO from './components/SEO';
-import ServicePage from './components/ServicePage';
 import { organizationSchema, localBusinessSchema, serviceSchema, faqSchema } from './lib/schemas';
 import './index.css';
+
+// Lazy load pages for code splitting & speed optimization
+const AdminPanel = lazy(() => import('./pages/AdminPanel'));
+const BookNow = lazy(() => import('./pages/BookNow'));
+const ServicePage = lazy(() => import('./pages/ServicePage'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const AccessDenied = lazy(() => import('./pages/AccessDenied'));
+// Dedicated content pages
+const ServicesPage = lazy(() => import('./pages/ServicesPage'));
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const TestimonialsPage = lazy(() => import('./pages/TestimonialsPage'));
+
+const LoadingSpinner = () => (
+  <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
+    <div className="flex flex-col items-center space-y-4">
+      <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
+      <p className="text-sm font-semibold text-muted-foreground animate-pulse">Loading Zettaweb...</p>
+    </div>
+  </div>
+);
 
 const Home = () => {
   useEffect(() => {
@@ -62,21 +78,21 @@ const Home = () => {
       <main className="relative z-10">
         <Hero />
         <SectionDivider />
-        <About />
+        <ServicesPreview />
         <SectionDivider />
-        <Services />
-        <SectionDivider />
-        <TechStack />
-        <SectionDivider />
-        <Projects />
+        <ProjectsPreview />
         <SectionDivider />
         <WhyChooseUs />
         <SectionDivider />
-        <Testimonials />
+        <TechStack />
+        <SectionDivider />
+        <About />
+        <SectionDivider />
+        <TestimonialsPreview />
         <SectionDivider />
         <FAQ />
         <SectionDivider />
-        <Contact />
+        <ContactPreview />
       </main>
       <Footer />
       <WhatsAppButton />
@@ -86,13 +102,16 @@ const Home = () => {
 
 const App = () => {
   return (
-
-  
     <Router>
       <div className="relative min-h-screen bg-background text-foreground">
-        <Routes>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/book-now" element={<BookNow />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/testimonials" element={<TestimonialsPage />} />
           <Route path="/services/web-development" element={
             <ServicePage 
               title="Web Development Services" 
@@ -148,6 +167,7 @@ const App = () => {
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </div>
     </Router>
   );
