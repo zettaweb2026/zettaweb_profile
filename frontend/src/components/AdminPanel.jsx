@@ -157,6 +157,23 @@ const AdminPanel = () => {
     }
   };
 
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/clients/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      await parseApiResponse(response);
+      loadAllData();
+    } catch (requestError) {
+      handleUnauthorized(requestError.message);
+    }
+  };
+
   const handleSave = async (e, resource) => {   //for savving / adding data
     e.preventDefault();
     setError('');
@@ -518,19 +535,7 @@ const AdminPanel = () => {
                     <label className={labelStyle}>Email Address</label>
                     <input name="email" type="email" defaultValue={editingItem.email} placeholder="e.g. contact@acme.com" required className={inputStyle} />
                   </div>
-                  {editingItem.id ? (
-                    <div>
-                      <label className={labelStyle}>Status</label>
-                      <select name="status" defaultValue={editingItem.status || 'Not Received'} className={inputStyle}>
-                        <option value="Not Received">Not Received</option>
-                        <option value="Received Call">Received Call</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Closed">Closed</option>
-                      </select>
-                    </div>
-                  ) : (
-                    <input type="hidden" name="status" value="Not Received" />
-                  )}
+                  <input type="hidden" name="status" value={editingItem.status || 'Not Received'} />
                 </div>
               )}
 
@@ -634,9 +639,24 @@ const AdminPanel = () => {
                               <td className="px-6 py-4">{item.phone}</td>
                               <td className="px-6 py-4">{item.email}</td>
                               <td className="px-6 py-4">
-                                <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${item.status === 'Received Call' ? 'bg-emerald-500/20 text-emerald-400' : item.status === 'Closed' ? 'bg-primary/20 text-primary' : item.status === 'In Progress' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-destructive/20 text-destructive'}`}>
-                                  {item.status || 'Not Received'}
-                                </span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {['Not Received', 'Received Call', 'In Progress', 'Closed'].map((s) => (
+                                    <button
+                                      key={s}
+                                      onClick={() => handleStatusChange(item.id, s)}
+                                      className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                                        (item.status === s || (!item.status && s === 'Not Received'))
+                                          ? (s === 'Received Call' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                                            : s === 'Closed' ? 'bg-primary/20 text-primary border border-primary/30' 
+                                            : s === 'In Progress' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' 
+                                            : 'bg-destructive/20 text-destructive border border-destructive/30')
+                                          : 'bg-black/40 text-muted-foreground hover:bg-white/10 hover:text-white border border-white/5'
+                                      }`}
+                                    >
+                                      {s}
+                                    </button>
+                                  ))}
+                                </div>
                               </td>
                               <td className="px-6 py-4 text-right">
                                 <div className="flex justify-end gap-2">
