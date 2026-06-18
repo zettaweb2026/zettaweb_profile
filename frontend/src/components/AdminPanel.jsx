@@ -69,6 +69,20 @@ const AdminPanel = () => {
     }
   }, []);
 
+  const fetchLeads = useCallback(async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/clients`, {
+        headers: getAuthHeaders(),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setLeads(json.data || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch leads:', err);
+    }
+  }, []);
+
   const fetchAdmins = useCallback(async () => {
     if (!isSuperAdmin) return;
     try {
@@ -92,11 +106,11 @@ const AdminPanel = () => {
     fetchData('techStack', setTechStack);
     fetchData('aboutValues', setAboutValues);
     fetchData('aboutTimeline', setAboutTimeline);
-    fetchData('leads', setLeads);    // for  client records
+    fetchLeads();    // for  client records
     if (isSuperAdmin) {
       fetchAdmins();
     }
-  }, [fetchData, fetchAdmins, isSuperAdmin]);
+  }, [fetchData, fetchAdmins, fetchLeads, isSuperAdmin]);
 
   useEffect(() => {
     loadAllData();
@@ -122,9 +136,12 @@ const AdminPanel = () => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       setError('');
       setSuccess('');
-      const url = resource === 'admins'
-        ? `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/users/${id}`
-        : `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}/${id}`;
+      let url = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}/${id}`;
+      if (resource === 'admins') {
+        url = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/users/${id}`;
+      } else if (resource === 'leads') {
+        url = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/clients/${id}`;
+      }
 
       try {
         const response = await fetch(url, {
@@ -165,7 +182,9 @@ const AdminPanel = () => {
     let method = editingItem && editingItem.id ? 'PUT' : 'POST';
     let url = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}${editingItem && editingItem.id ? `/${editingItem.id}` : ''}`;
 
-    if (resource === 'admins') {
+    if (resource === 'leads') {
+      url = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/clients${editingItem && editingItem.id ? `/${editingItem.id}` : ''}`;
+    } else if (resource === 'admins') {
       data.permissions = selectedPermissions;
       if (editingItem && editingItem.id) {
         method = 'PUT';
@@ -483,9 +502,9 @@ const AdminPanel = () => {
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="md:col-span-2 p-4 rounded-xl bg-primary/10 border border-primary/20 text-sm text-primary">
                     <p className="font-semibold flex items-center gap-2 mb-1">
-                      <LucideIcons.Info size={16} /> Firebase Integration Note
+                      <LucideIcons.CheckCircle size={16} /> Firebase Integration Active
                     </p>
-                    <p className="text-primary/80">This form currently uses the standard API handler. Your friend can replace the submit logic for the 'leads' tab to interact with Firebase instead.</p>
+                    <p className="text-primary/80">This form correctly uses the Firebase backend (/api/clients) to securely store Client Records.</p>
                   </div>
                   <div>
                     <label className={labelStyle}>Company Name</label>
