@@ -1,0 +1,78 @@
+[33m5bc4e37[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m serviceKey added
+[33med3ceec[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m .emergent removed
+[33md4b9394[m env fix
+[33m9db32b2[m Fix 403 permission error for super admin
+[33m5c2152d[m perf: implement manual code-splitting chunk vendor optimizations to reduce index JS to 134 kB
+[33mfe72d64[m fix: align Vite and Vercel build directory to build/ folder and deploy canonical & sitemap configurations
+[33m27a3a35[m fix: visually hide pre-rendered crawler content in index.html to prevent flash on refresh
+[33mff27614[m feat: align all domains to zetta-web.in and embed pre-rendered semantic HTML skeleton in index.html for crawlers
+[33mf74b249[m perf: add SEO preconnect hints, defer scripts and verification placeholder to index.html
+[33mb4bddc5[m feat: implement comprehensive UI/UX improvements across frontend
+[33mb59fea4[m fix: relocate vercel.json to frontend directory and remove invalid rootDirectory property
+[33md009f0f[m fix: disable health check logging during production build to avoid Vercel logs error
+[33m3d77fc5[m ci: pin actions to latest patch versions supporting Node.js 24 runtime
+[33mf68da84[m fix: set vercel.json rootDirectory to frontend to fix deployment path error
+[33m7c9cedf[m fix: root vercel.json + premium 3D card hover with spotlight glow
+[33m0f5848e[m build: change Vite output directory to dist to match Vercel expectations
+[33m88672e0[m revert: simplify card hover to the original 3D tilt animation
+[33m18b5aec[m feat: add interactive 3D hover tilt, cursor spotlight, and dynamic edge glow to Hero card
+[33m8d2b9e4[m Restore 3D interactive mouse tilt and glow animations on the single Hero card
+[33m59cc158[m Upgrade CI workflow to Node 24 and set FORCE_JAVASCRIPT_ACTIONS_TO_NODE24
+[33mb48c030[m Keep only the single front card in Hero section and remove overlays
+[33mdab9975[m Revert interactive 3D card deck to static 2D stacked layout
+[33mcf55dd1[m Fix 3D card deck overlapping in Hero section
+[33m1e46443[m Configure Vite build outDir to 'build' for Vercel deployment
+[33m7071b49[m Upgrade Node.js to 20 in CI workflow to support Vite
+[33mfec834f[m Configure GitHub Actions CI workflow and fix test scripts
+[33m9d75369[m Merge remote-tracking branch 'origin/main'
+[33m036c0de[m 15/06/2026
+[33mc119e49[m SEO optimization complete
+[33mcf02e66[m 15/06/2026
+[33m1a25afa[m 12/06/2026
+[33m6a0ee86[m 12/06/2026
+[33mf711f38[m seo optimization 3
+[33m8668d81[m seo optimization 2
+[33me8b2c33[m seo optimisation
+[33mcf0d026[m Merge pull request #4 from zettaweb2026/robots
+[33mf189b41[m[33m ([m[1;31morigin/robots[m[33m)[m Merge branch 'main' into robots
+[33m54835df[m[33m ([m[1;32mrobots[m[33m)[m robots and sitemap changes
+[33mb384b39[m Merge pull request #3 from zettaweb2026/sitemap
+[33mc0bdd01[m robots and sitemap is added
+[33m06f48dd[m error-fix backend
+[33md290d04[m Merge pull request #2 from zettaweb2026/check-error
+[33mafcb67f[m[33m ([m[1;31morigin/check-error[m[33m, [m[1;32mcheck-error[m[33m)[m error-check
+[33m3e9dbf5[m Delete frontend/.env
+[33mbbce3b1[m Delete backend/.env
+[33m390aee4[m Merge pull request #1 from zettaweb2026/arun
+[33m360ee9e[m[33m ([m[1;31morigin/arun[m[33m, [m[1;32marun[m[33m)[m auth added
+[33m7149424[m login and register page added
+[33mb5c6e3e[m fix 3
+[33m85c1991[m fix2
+[33m4e9e34b[m fix
+[33m7c6890b[m maintanance
+[33m790805a[m readme update
+[33mf77e41c[m final commit
+[33ma6584b4[m .npmrc fix
+[33mb536fbb[m chore: update package-lock.json after resolving peer dependencies
+[33m6f0e8cb[m chore: add .npmrc to fix npm install ERESOLVE conflicts for vercel deployment
+[33m814cd33[m Merge pull request #1 from Debmalya727/main
+[33mb7d909b[m Done 28/05/2026
+[33m11d4fad[m samir1
+[33m7ce667f[m final commit by sam
+[33m140a4c0[m location
+[33m99896ed[m ph-location commi
+[33m0621b70[m contactinfo commi
+[33m26c320a[m secound commit
+[33me5dc5b7[m initial commit
+[33m37313c8[m auto-commit for d8ade0d3-5c30-4dfb-b5e3-c21f34fad15d
+[33mf59dd34[m Auto-commit before changes
+[33m616948b[m auto-commit for aaf17824-e27b-4035-b194-bb331ced713d
+[33m96c1ddf[m auto-commit for 5306c6ab-0a7c-4748-b42a-f305f109d856
+[33mea4011e[m auto-commit for 8ab7fcb3-40db-428e-a376-13d87fbfc21b
+[33m488bb7f[m auto-commit for d06bdbe3-c174-4e0d-b8ae-8292e327a4fc
+[33mde6d717[m auto-commit for e8ecb1fd-3c7b-41d3-a4ef-764909f0a42b
+[33m441ec5e[m auto-commit for 1f97baf5-ee52-4a23-b894-81429a4e9f70
+[33mc6c9987[m auto-commit for e87f1590-d6a4-42fa-a846-78e524829b81
+[33m1a9cc4b[m Auto-commit before changes
+[33m72ea6f0[m auto-commit for 671f0c26-a3f1-4973-9293-18cd04d449bc
+[33m62a7188[m Initial commit
