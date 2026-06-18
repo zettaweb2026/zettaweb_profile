@@ -15,6 +15,7 @@ const AdminPanel = () => {
   const [aboutValues, setAboutValues] = useState([]);
   const [aboutTimeline, setAboutTimeline] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [leads, setLeads] = useState([]);
 
   const isSuperAdmin = currentUser && currentUser.isSuperAdmin;
   
@@ -25,6 +26,7 @@ const AdminPanel = () => {
     { id: 'techStack', label: 'Tech Stack', icon: 'Code' },
     { id: 'aboutValues', label: 'About Values', icon: 'Heart' },
     { id: 'aboutTimeline', label: 'About Timeline', icon: 'Calendar' },
+    { id: 'leads', label: 'Client Record', icon: 'PhoneCall' },
     { id: 'admins', label: 'Admins', icon: 'Users' }
   ];
 
@@ -90,6 +92,7 @@ const AdminPanel = () => {
     fetchData('techStack', setTechStack);
     fetchData('aboutValues', setAboutValues);
     fetchData('aboutTimeline', setAboutTimeline);
+    fetchData('leads', setLeads);    // for  client records
     if (isSuperAdmin) {
       fetchAdmins();
     }
@@ -105,7 +108,7 @@ const AdminPanel = () => {
       if (editingItem.id) {
         setSelectedPermissions(editingItem.permissions || []);
       } else {
-        setSelectedPermissions(['projects', 'testimonials', 'services', 'techStack', 'aboutValues', 'aboutTimeline']);
+        setSelectedPermissions(['projects', 'testimonials', 'services', 'techStack', 'aboutValues', 'aboutTimeline', 'leads']);
       }
     }
   }, [editingItem]);
@@ -115,7 +118,7 @@ const AdminPanel = () => {
     navigate('/admin/login', { replace: true });
   };
 
-  const handleDelete = async (resource, id) => {
+  const handleDelete = async (resource, id) => {         //for deleting data
     if (window.confirm('Are you sure you want to delete this item?')) {
       setError('');
       setSuccess('');
@@ -137,7 +140,7 @@ const AdminPanel = () => {
     }
   };
 
-  const handleSave = async (e, resource) => {
+  const handleSave = async (e, resource) => {   //for savving / adding data
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -476,6 +479,42 @@ const AdminPanel = () => {
                 </div>
               )}
 
+              {activeTab === 'leads' && (
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="md:col-span-2 p-4 rounded-xl bg-primary/10 border border-primary/20 text-sm text-primary">
+                    <p className="font-semibold flex items-center gap-2 mb-1">
+                      <LucideIcons.Info size={16} /> Firebase Integration Note
+                    </p>
+                    <p className="text-primary/80">This form currently uses the standard API handler. Your friend can replace the submit logic for the 'leads' tab to interact with Firebase instead.</p>
+                  </div>
+                  <div>
+                    <label className={labelStyle}>Company Name</label>
+                    <input name="companyName" defaultValue={editingItem.companyName} placeholder="e.g. Acme Corp" required className={inputStyle} />
+                  </div>
+                  <div>
+                    <label className={labelStyle}>Phone Number</label>
+                    <input name="phone" defaultValue={editingItem.phone} placeholder="e.g. +1 234 567 8900" required className={inputStyle} />
+                  </div>
+                  <div>
+                    <label className={labelStyle}>Email Address</label>
+                    <input name="email" type="email" defaultValue={editingItem.email} placeholder="e.g. contact@acme.com" required className={inputStyle} />
+                  </div>
+                  {editingItem.id ? (
+                    <div>
+                      <label className={labelStyle}>Status</label>
+                      <select name="status" defaultValue={editingItem.status || 'Not Received'} className={inputStyle}>
+                        <option value="Not Received">Not Received</option>
+                        <option value="Received Call">Received Call</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Closed">Closed</option>
+                      </select>
+                    </div>
+                  ) : (
+                    <input type="hidden" name="status" value="Not Received" />
+                  )}
+                </div>
+              )}
+
               {activeTab === 'admins' && (
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
@@ -500,7 +539,8 @@ const AdminPanel = () => {
                         { id: 'services', label: 'Services' },
                         { id: 'techStack', label: 'Tech Stack' },
                         { id: 'aboutValues', label: 'About Values' },
-                        { id: 'aboutTimeline', label: 'About Timeline' }
+                        { id: 'aboutTimeline', label: 'About Timeline' },
+                        { id: 'leads', label: 'Client Record' }
                       ].map(perm => (
                         <label key={perm.id} className="flex items-center space-x-3 cursor-pointer p-3 rounded-xl border border-white/5 hover:border-white/10 bg-black/20 hover:bg-white/5 transition-all select-none">
                           <input
@@ -543,6 +583,7 @@ const AdminPanel = () => {
                 if (activeTab === 'techStack') currentData = techStack;
                 if (activeTab === 'aboutValues') currentData = aboutValues;
                 if (activeTab === 'aboutTimeline') currentData = aboutTimeline;
+                if (activeTab === 'leads') currentData = leads;
                 if (activeTab === 'admins') currentData = admins;
 
                 if (currentData.length === 0) {
@@ -550,6 +591,48 @@ const AdminPanel = () => {
                     <div className="text-center py-16 text-muted-foreground border border-dashed border-white/10 rounded-2xl bg-black/10">
                       <LucideIcons.Inbox size={48} className="mx-auto mb-3 opacity-20" />
                       <p className="text-sm font-semibold">No records found. Click 'Add New' to create one.</p>
+                    </div>
+                  );
+                }
+
+                if (activeTab === 'leads') {
+                  return (
+                    <div className="overflow-x-auto rounded-xl border border-white/5 bg-black/20">
+                      <table className="w-full text-left text-sm text-muted-foreground">
+                        <thead className="bg-white/5 text-xs uppercase text-white font-semibold">
+                          <tr>
+                            <th className="px-6 py-4">Company Name</th>
+                            <th className="px-6 py-4">Phone</th>
+                            <th className="px-6 py-4">Email</th>
+                            <th className="px-6 py-4">Status</th>
+                            <th className="px-6 py-4 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                          {currentData.map((item) => (
+                            <tr key={item.id} className="hover:bg-white/5 transition-colors">
+                              <td className="px-6 py-4 font-medium text-white">{item.companyName}</td>
+                              <td className="px-6 py-4">{item.phone}</td>
+                              <td className="px-6 py-4">{item.email}</td>
+                              <td className="px-6 py-4">
+                                <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${item.status === 'Received Call' ? 'bg-emerald-500/20 text-emerald-400' : item.status === 'Closed' ? 'bg-primary/20 text-primary' : item.status === 'In Progress' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-destructive/20 text-destructive'}`}>
+                                  {item.status || 'Not Received'}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Button size="sm" onClick={() => setEditingItem(item)} className="bg-white/5 hover:bg-white/10 text-white rounded-lg px-3 py-1 transition-all">
+                                    <LucideIcons.Edit size={14} />
+                                  </Button>
+                                  <Button size="sm" variant="destructive" onClick={() => handleDelete(activeTab, item.id)} className="rounded-lg px-3 py-1 transition-all">
+                                    <LucideIcons.Trash2 size={14} />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   );
                 }
