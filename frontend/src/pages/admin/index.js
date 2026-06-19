@@ -1,0 +1,4 @@
+export { default as AdminPanel } from './AdminPanel';
+export { default as Login } from './Login';
+export { default as Register } from './Register';
+export { default as AccessDenied } from './AccessDenied';

@@ -9,10 +9,10 @@ async function migrate() {
     await mongoose.connect(URI);
     console.log('Connected to MongoDB');
 
-    const dbData = JSON.parse(fs.readFileSync('./db.json', 'utf8'));
+    const dbData = JSON.parse(fs.readFileSync('../data/db.json', 'utf8'));
     
     // Import Schemas
-    const app = require('./server'); // This registers the schemas but we won't listen
+    const app = require('../server'); // This registers the schemas but we won't listen
     
     const collections = ['projects', 'testimonials', 'services', 'techStack', 'aboutValues', 'aboutTimeline'];
     

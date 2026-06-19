@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const dbPath = './db.json';
+const dbPath = '../data/db.json';
 const db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
 
 db.services = [
