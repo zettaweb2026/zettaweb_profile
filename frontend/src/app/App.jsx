@@ -1,34 +1,34 @@
 /**
- * App.jsx — Application root.
+ * app/App.jsx — Application root.
  * Wires together the Router, Suspense boundary, Home page, and all routes.
- * Route definitions live in app/routes.jsx.
+ * Route definitions live in app/routes.jsx (same directory).
  */
 import React, { useEffect, Suspense } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 // Layout
-import { Navbar, Footer } from './components/layout';
+import { Navbar, Footer } from '../components/layout';
 
 // Common
-import { ParticleBackground, WhatsAppButton, SEO, SectionDivider, TechStack } from './components/common';
+import { ParticleBackground, WhatsAppButton, SEO, SectionDivider, TechStack } from '../components/common';
 
 // Features — eager loaded for the home page
-import { Hero, WhyChooseUs } from './features/home';
-import { ServicesPreview } from './features/services';
-import { ProjectsPreview } from './features/projects';
-import { TestimonialsPreview } from './features/testimonials';
-import { ContactPreview } from './features/contact';
-import { About } from './features/about';
-import { FAQ } from './features/faq';
+import { Hero, WhyChooseUs } from '../features/home';
+import { ServicesPreview } from '../features/services';
+import { ProjectsPreview } from '../features/projects';
+import { TestimonialsPreview } from '../features/testimonials';
+import { ContactPreview } from '../features/contact';
+import { About } from '../features/about';
+import { FAQ } from '../features/faq';
 
 // SEO schemas
-import { organizationSchema, localBusinessSchema, serviceSchema, faqSchema } from './lib/schemas';
+import { organizationSchema, localBusinessSchema, serviceSchema, faqSchema } from '../lib/schemas';
 
 // Global styles
-import './index.css';
+import '../index.css';
 
-// Routes
-import AppRoutes from './app/routes';
+// Routes (same app/ directory)
+import AppRoutes from './routes';
 
 // ─── Loading Spinner ─────────────────────────────────────────────────────────
 const LoadingSpinner = () => (
