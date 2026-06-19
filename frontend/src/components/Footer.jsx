@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Linkedin, Twitter, Mail, Heart } from 'lucide-react';
+import { Github, Linkedin, Facebook, Instagram, Mail, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Footer = () => {
@@ -27,9 +27,10 @@ export const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/company/zettawebsolutions/', label: 'LinkedIn' },
+    { icon: Facebook, href: 'https://www.facebook.com/profile.php?id=61590293921402', label: 'Facebook' },
+    { icon: Instagram, href: 'https://www.instagram.com/zetta_web_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', label: 'Instagram' },
     { icon: Github, href: 'https://github.com/zettaweb2026', label: 'GitHub' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
     { icon: Mail, href: 'mailto:support@zetta-web.in', label: 'Email' },
   ];
 
@@ -91,6 +92,8 @@ export const Footer = () => {
                   <a
                     key={social.label}
                     href={social.href}
+                    target={social.href.startsWith('http') ? '_blank' : undefined}
+                    rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                     onClick={(e) => {
                       if (social.href === '#') e.preventDefault();
                     }}

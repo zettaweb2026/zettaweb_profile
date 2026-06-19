@@ -5,9 +5,9 @@ export const organizationSchema = {
   "url": "https://www.zetta-web.in/",
   "logo": "https://www.zetta-web.in/logo.png",
   "sameAs": [
-    "https://www.facebook.com/zettaweb",
-    "https://twitter.com/zettaweb",
-    "https://www.linkedin.com/company/zettaweb"
+    "https://www.facebook.com/profile.php?id=61590293921402",
+    "https://www.instagram.com/zetta_web_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+    "https://www.linkedin.com/company/zettawebsolutions/"
   ]
 };
 

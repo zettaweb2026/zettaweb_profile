@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Mail, MapPin, Phone, Send, Loader2, CheckCircle2 } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, Loader2, CheckCircle2, Linkedin, Github, Facebook, Instagram } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -157,6 +157,13 @@ export const Contact = () => {
     },
   ];
 
+  const socialLinks = [
+    { icon: Linkedin, href: 'https://www.linkedin.com/company/zettawebsolutions/', label: 'LinkedIn' },
+    { icon: Facebook, href: 'https://www.facebook.com/profile.php?id=61590293921402', label: 'Facebook' },
+    { icon: Instagram, href: 'https://www.instagram.com/zetta_web_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', label: 'Instagram' },
+    { icon: Github, href: 'https://github.com/zettaweb2026', label: 'GitHub' },
+  ];
+
   return (
     <section id="contact" className="py-20 lg:py-32 relative overflow-hidden">
       {/* Background blobs */}
@@ -233,19 +240,21 @@ export const Contact = () => {
             >
               <h4 className="font-bold text-sm tracking-wide uppercase text-muted-foreground mb-4">Follow Us</h4>
               <div className="flex gap-3 select-none">
-                {['linkedin', 'github', 'twitter', 'instagram'].map((social) => (
-                  <a
-                    key={social}
-                    href="#"
-                    onClick={(e) => e.preventDefault()}
-                    className="w-11 h-11 glass rounded-xl flex items-center justify-center hover:border-primary/40 hover:scale-115 transition-all duration-300"
-                    aria-label={social}
-                  >
-                    <span className="text-primary font-black text-xs uppercase">
-                      {social.substring(0, 2)}
-                    </span>
-                  </a>
-                ))}
+                {socialLinks.map((social) => {
+                  const Icon = social.icon;
+                  return (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-11 h-11 glass rounded-xl flex items-center justify-center hover:border-primary/40 hover:scale-115 transition-all duration-300 group"
+                      aria-label={social.label}
+                    >
+                      <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </a>
+                  );
+                })}
               </div>
             </motion.div>
           </motion.div>
