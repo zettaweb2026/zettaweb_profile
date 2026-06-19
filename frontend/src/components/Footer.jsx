@@ -31,7 +31,6 @@ export const Footer = () => {
     { icon: Facebook, href: 'https://www.facebook.com/profile.php?id=61590293921402', label: 'Facebook' },
     { icon: Instagram, href: 'https://www.instagram.com/zetta_web_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', label: 'Instagram' },
     { icon: Github, href: 'https://github.com/zettaweb2026', label: 'GitHub' },
-    { icon: Mail, href: 'mailto:support@zetta-web.in', label: 'Email' },
   ];
 
   const scrollToSection = (e, href) => {
@@ -66,6 +65,13 @@ export const Footer = () => {
     }
   };
 
+  const handleEmailClick = (e) => {
+    e.preventDefault();
+    navigator.clipboard.writeText('support@zetta-web.in');
+    toast.success('Email address copied to clipboard!');
+    window.open('https://mail.google.com/mail/?view=cm&fs=1&to=support@zetta-web.in', '_blank');
+  };
+
   const [isSubscribed, setIsSubscribed] = React.useState(false);
 
   const handleSubscribe = (e) => {
@@ -96,23 +102,35 @@ export const Footer = () => {
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-sm">
               Building innovative digital solutions that transform businesses and shape the future of technology.
             </p>
-            <div className="flex gap-3 select-none">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target={social.href.startsWith('http') ? '_blank' : undefined}
-                    rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    onClick={(e) => handleSocialClick(e, social)}
-                    aria-label={social.label}
-                    className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:border-primary/45 transition-colors group"
-                  >
-                    <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </a>
-                );
-              })}
+            <div className="space-y-4">
+              <div className="flex gap-3 select-none">
+                {socialLinks.map((social) => {
+                  const Icon = social.icon;
+                  return (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target={social.href.startsWith('http') ? '_blank' : undefined}
+                      rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      onClick={(e) => handleSocialClick(e, social)}
+                      aria-label={social.label}
+                      className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:border-primary/45 transition-colors group"
+                    >
+                      <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </a>
+                  );
+                })}
+              </div>
+              <div className="pt-1">
+                <a
+                  href="mailto:support@zetta-web.in"
+                  onClick={handleEmailClick}
+                  className="text-sm font-semibold text-muted-foreground hover:text-primary transition-all duration-300 flex items-center gap-2.5 w-fit group"
+                >
+                  <Mail className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
+                  support@zetta-web.in
+                </a>
+              </div>
             </div>
           </div>
 
