@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ArrowRight, Mail, Phone, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 /**
  * ContactPreview — Lightweight homepage teaser.
@@ -32,6 +33,15 @@ export const ContactPreview = () => {
       href: 'https://www.google.com/maps/place/Kolkata',
     },
   ];
+
+  const handleContactInfoClick = (e, item) => {
+    if (item.label === 'Email Us') {
+      e.preventDefault();
+      navigator.clipboard.writeText(item.value);
+      toast.success('Email address copied to clipboard!');
+      window.location.href = item.href;
+    }
+  };
 
   return (
     <section id="contact" className="py-20 lg:py-28 relative overflow-hidden">
@@ -64,26 +74,30 @@ export const ContactPreview = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-10"
         >
-          {contactInfo.map(({ icon: Icon, label, value, href }, i) => (
-            <motion.a
-              key={label}
-              href={href}
-              target={href.startsWith('http') ? '_blank' : undefined}
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
-              className="flex flex-col items-center text-center p-6 glass rounded-2xl hover:border-primary/40 transition-all duration-300 group border border-transparent"
-            >
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
-                <Icon className="w-5 h-5 text-primary" />
-              </div>
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">{label}</p>
-              <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                {value}
-              </p>
-            </motion.a>
-          ))}
+          {contactInfo.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <motion.a
+                key={item.label}
+                href={item.href}
+                onClick={(e) => handleContactInfoClick(e, item)}
+                target={item.href.startsWith('http') ? '_blank' : undefined}
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
+                className="flex flex-col items-center text-center p-6 glass rounded-2xl hover:border-primary/40 transition-all duration-300 group border border-transparent"
+              >
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
+                  <Icon className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">{item.label}</p>
+                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {item.value}
+                </p>
+              </motion.a>
+            );
+          })}
         </motion.div>
 
         {/* CTA Buttons */}

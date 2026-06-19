@@ -55,6 +55,17 @@ export const Footer = () => {
     }
   };
 
+  const handleSocialClick = (e, social) => {
+    if (social.label === 'Email') {
+      e.preventDefault();
+      navigator.clipboard.writeText('support@zetta-web.in');
+      toast.success('Email address copied to clipboard!');
+      window.location.href = 'mailto:support@zetta-web.in';
+    } else if (social.href === '#') {
+      e.preventDefault();
+    }
+  };
+
   const [isSubscribed, setIsSubscribed] = React.useState(false);
 
   const handleSubscribe = (e) => {
@@ -94,9 +105,7 @@ export const Footer = () => {
                     href={social.href}
                     target={social.href.startsWith('http') ? '_blank' : undefined}
                     rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    onClick={(e) => {
-                      if (social.href === '#') e.preventDefault();
-                    }}
+                    onClick={(e) => handleSocialClick(e, social)}
                     aria-label={social.label}
                     className="w-10 h-10 glass rounded-xl flex items-center justify-center hover:border-primary/45 transition-colors group"
                   >

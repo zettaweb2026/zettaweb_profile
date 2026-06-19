@@ -164,6 +164,15 @@ export const Contact = () => {
     { icon: Github, href: 'https://github.com/zettaweb2026', label: 'GitHub' },
   ];
 
+  const handleContactInfoClick = (e, info) => {
+    if (info.title === 'Email') {
+      e.preventDefault();
+      navigator.clipboard.writeText(info.value);
+      toast.success('Email address copied to clipboard!');
+      window.location.href = info.link;
+    }
+  };
+
   return (
     <section id="contact" className="py-20 lg:py-32 relative overflow-hidden">
       {/* Background blobs */}
@@ -214,6 +223,7 @@ export const Contact = () => {
                   <motion.a
                     key={info.title}
                     href={info.link}
+                    onClick={(e) => handleContactInfoClick(e, info)}
                     initial={{ opacity: 0, y: 20 }}
                     animate={inView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
