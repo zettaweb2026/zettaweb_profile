@@ -37,6 +37,7 @@ const AdminPanel = () => {
   });
 
   const [activeTab, setActiveTab] = useState('projects');
+  const [leadsPage, setLeadsPage] = useState(1);
   const [editingItem, setEditingItem] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -771,58 +772,91 @@ const AdminPanel = () => {
                 }
 
                 if (activeTab === 'leads') {
+                  const ITEMS_PER_PAGE = 5;
+                  const totalPages = Math.ceil(currentData.length / ITEMS_PER_PAGE);
+                  const startIndex = (leadsPage - 1) * ITEMS_PER_PAGE;
+                  const paginatedData = currentData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
                   return (
-                    <div className="overflow-x-auto rounded-xl border border-white/5 bg-black/20">
-                      <table className="w-full text-left text-sm text-muted-foreground">
-                        <thead className="bg-white/5 text-xs uppercase text-white font-semibold">
-                          <tr>
-                            <th className="px-6 py-4">Company Name</th>
-                            <th className="px-6 py-4">Phone</th>
-                            <th className="px-6 py-4">Email</th>
-                            <th className="px-6 py-4">Status</th>
-                            <th className="px-6 py-4 text-right">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5">
-                          {currentData.map((item) => (
-                            <tr key={item.id} className="hover:bg-white/5 transition-colors">
-                              <td className="px-6 py-4 font-medium text-white">{item.companyName}</td>
-                              <td className="px-6 py-4">{item.phone}</td>
-                              <td className="px-6 py-4">{item.email}</td>
-                              <td className="px-6 py-4">
-                                <div className="flex flex-wrap gap-1.5">
-                                  {['Not Received', 'Received Call', 'In Progress', 'Closed'].map((s) => (
-                                    <button
-                                      key={s}
-                                      onClick={() => handleStatusChange(item.id, s)}
-                                      className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                                        (item.status === s || (!item.status && s === 'Not Received'))
-                                          ? (s === 'Received Call' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-                                            : s === 'Closed' ? 'bg-primary/20 text-primary border border-primary/30' 
-                                            : s === 'In Progress' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' 
-                                            : 'bg-destructive/20 text-destructive border border-destructive/30')
-                                          : 'bg-black/40 text-muted-foreground hover:bg-white/10 hover:text-white border border-white/5'
-                                      }`}
-                                    >
-                                      {s}
-                                    </button>
-                                  ))}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 text-right">
-                                <div className="flex justify-end gap-2">
-                                  <Button size="sm" onClick={() => setEditingItem(item)} className="bg-white/5 hover:bg-white/10 text-white rounded-lg px-3 py-1 transition-all">
-                                    <LucideIcons.Edit size={14} />
-                                  </Button>
-                                  <Button size="sm" variant="destructive" onClick={() => handleDelete(activeTab, item.id)} className="rounded-lg px-3 py-1 transition-all">
-                                    <LucideIcons.Trash2 size={14} />
-                                  </Button>
-                                </div>
-                              </td>
+                    <div className="space-y-4">
+                      <div className="overflow-x-auto rounded-xl border border-white/5 bg-black/20">
+                        <table className="w-full text-left text-sm text-muted-foreground">
+                          <thead className="bg-white/5 text-xs uppercase text-white font-semibold">
+                            <tr>
+                              <th className="px-6 py-4">Company Name</th>
+                              <th className="px-6 py-4">Phone</th>
+                              <th className="px-6 py-4">Email</th>
+                              <th className="px-6 py-4">Status</th>
+                              <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="divide-y divide-white/5">
+                            {paginatedData.map((item) => (
+                              <tr key={item.id} className="hover:bg-white/5 transition-colors">
+                                <td className="px-6 py-4 font-medium text-white">{item.companyName}</td>
+                                <td className="px-6 py-4">{item.phone}</td>
+                                <td className="px-6 py-4">{item.email}</td>
+                                <td className="px-6 py-4">
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {['Not Received', 'Received Call', 'In Progress', 'Closed'].map((s) => (
+                                      <button
+                                        key={s}
+                                        onClick={() => handleStatusChange(item.id, s)}
+                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                                          (item.status === s || (!item.status && s === 'Not Received'))
+                                            ? (s === 'Received Call' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                                              : s === 'Closed' ? 'bg-primary/20 text-primary border border-primary/30' 
+                                              : s === 'In Progress' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' 
+                                              : 'bg-destructive/20 text-destructive border border-destructive/30')
+                                            : 'bg-black/40 text-muted-foreground hover:bg-white/10 hover:text-white border border-white/5'
+                                        }`}
+                                      >
+                                        {s}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 text-right">
+                                  <div className="flex justify-end gap-2">
+                                    <Button size="sm" onClick={() => setEditingItem(item)} className="bg-white/5 hover:bg-white/10 text-white rounded-lg px-3 py-1 transition-all">
+                                      <LucideIcons.Edit size={14} />
+                                    </Button>
+                                    <Button size="sm" variant="destructive" onClick={() => handleDelete(activeTab, item.id)} className="rounded-lg px-3 py-1 transition-all">
+                                      <LucideIcons.Trash2 size={14} />
+                                    </Button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      
+                      {totalPages > 1 && (
+                        <div className="flex justify-between items-center px-4 py-2 bg-white/5 border border-white/10 rounded-xl">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setLeadsPage(p => Math.max(1, p - 1))}
+                            disabled={leadsPage === 1}
+                            className="border-white/10 text-white hover:bg-white/10 transition-colors disabled:opacity-50"
+                          >
+                            <LucideIcons.ChevronLeft size={16} className="mr-1" /> Prev
+                          </Button>
+                          <span className="text-sm font-semibold text-muted-foreground">
+                            Page {leadsPage} of {totalPages}
+                          </span>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setLeadsPage(p => Math.min(totalPages, p + 1))}
+                            disabled={leadsPage === totalPages}
+                            className="border-white/10 text-white hover:bg-white/10 transition-colors disabled:opacity-50"
+                          >
+                            Next <LucideIcons.ChevronRight size={16} className="ml-1" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   );
                 }
