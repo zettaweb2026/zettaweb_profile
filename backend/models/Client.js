@@ -5,7 +5,7 @@ const COLLECTION_NAME = 'clients';
 class ClientService {
   static async createClient(clientData) {
     try {
-      const { companyName, email, phone, status } = clientData;
+      const { companyName, email, phone, status, ...otherFields } = clientData;
 
       if (!companyName || !email || !phone) {
         throw new Error('Company Name, email, and phone are required');
@@ -17,6 +17,7 @@ class ClientService {
         phone: phone.trim(),
         status: status || 'Not Received',
         createdAt: new Date(),
+        ...otherFields
       };
 
       const docRef = await db.collection(COLLECTION_NAME).add(client);

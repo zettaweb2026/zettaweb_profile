@@ -176,7 +176,12 @@ const AdminPanel = () => {
     reader.onload = async (event) => {
       try {
         const csvData = event.target.result;
-        // Simple CSV parser
+        // Robust CSV line parser handling quotes
+        const parseCSVLine = (text) => {
+          const re = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
+          return text.split(re).map(col => col.replace(/^"|"$/g, '').trim());
+        };
+
         const lines = csvData.split(/\r?\n/).filter(line => line.trim());
         if (lines.length < 2) {
           setError('CSV file is empty or missing data rows.');
@@ -184,29 +189,35 @@ const AdminPanel = () => {
           return;
         }
 
-        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-        const companyIdx = headers.findIndex(h => h.includes('company'));
-        const phoneIdx = headers.findIndex(h => h.includes('phone'));
-        const emailIdx = headers.findIndex(h => h.includes('email'));
-
-        if (companyIdx === -1 || phoneIdx === -1 || emailIdx === -1) {
-          setError('CSV must contain headers for Company Name, Phone, and Email.');
-          setSuccess('');
-          return;
-        }
-
+        const headers = parseCSVLine(lines[0]);
         let addedCount = 0;
-        for (let i = 1; i < lines.length; i++) {
-          // A rudimentary split that doesn't handle quoted commas, sufficient for simple CSVs
-          const row = lines[i].split(',').map(col => col.trim());
-          if (row.length < headers.length) continue;
 
-          const newClient = {
-            companyName: row[companyIdx],
-            phone: row[phoneIdx],
-            email: row[emailIdx],
-            status: 'Not Received'
-          };
+        for (let i = 1; i < lines.length; i++) {
+          const row = parseCSVLine(lines[i]);
+          const newClient = { status: 'Not Received' };
+          
+          let hasData = false;
+          headers.forEach((header, index) => {
+            if (header) {
+              const val = row[index] || '';
+              const lowerHeader = header.toLowerCase();
+              let keyName = header;
+              
+              if (lowerHeader.includes('company') || lowerHeader.includes('name')) keyName = 'companyName';
+              else if (lowerHeader.includes('phone') || lowerHeader.includes('number')) keyName = 'phone';
+              else if (lowerHeader.includes('email') || lowerHeader.includes('mail')) keyName = 'email';
+              
+              newClient[keyName] = val;
+              if (val) hasData = true;
+            }
+          });
+
+          if (!hasData) continue;
+          
+          // Ensure mandatory fields exist for the backend model
+          if (!newClient.companyName) newClient.companyName = newClient.name || 'Unknown Company';
+          if (!newClient.phone) newClient.phone = 'N/A';
+          if (!newClient.email) newClient.email = 'unknown@example.com';
 
           try {
             await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/clients`, {
