@@ -165,6 +165,75 @@ const AdminPanel = () => {
     }
   };
 
+  const handleCsvUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setError('');
+    setSuccess('Processing CSV...');
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const csvData = event.target.result;
+        // Simple CSV parser
+        const lines = csvData.split(/\r?\n/).filter(line => line.trim());
+        if (lines.length < 2) {
+          setError('CSV file is empty or missing data rows.');
+          setSuccess('');
+          return;
+        }
+
+        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+        const companyIdx = headers.findIndex(h => h.includes('company'));
+        const phoneIdx = headers.findIndex(h => h.includes('phone'));
+        const emailIdx = headers.findIndex(h => h.includes('email'));
+
+        if (companyIdx === -1 || phoneIdx === -1 || emailIdx === -1) {
+          setError('CSV must contain headers for Company Name, Phone, and Email.');
+          setSuccess('');
+          return;
+        }
+
+        let addedCount = 0;
+        for (let i = 1; i < lines.length; i++) {
+          // A rudimentary split that doesn't handle quoted commas, sufficient for simple CSVs
+          const row = lines[i].split(',').map(col => col.trim());
+          if (row.length < headers.length) continue;
+
+          const newClient = {
+            companyName: row[companyIdx],
+            phone: row[phoneIdx],
+            email: row[emailIdx],
+            status: 'Not Received'
+          };
+
+          try {
+            await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/clients`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...getAuthHeaders(),
+              },
+              body: JSON.stringify(newClient),
+            });
+            addedCount++;
+          } catch (err) {
+            console.error('Failed to add client:', err);
+          }
+        }
+
+        setSuccess(`Successfully added ${addedCount} clients from CSV.`);
+        loadAllData(); // Refresh the table
+      } catch (err) {
+        setError('Failed to parse CSV file.');
+        setSuccess('');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = ''; // Reset input so same file can be uploaded again if needed
+  };
+
   const handleDelete = async (resource, id) => {         //for deleting data
     if (window.confirm('Are you sure you want to delete this item?')) {
       setError('');
@@ -399,14 +468,21 @@ const AdminPanel = () => {
             {!editingItem && (
               <div className="flex items-center space-x-3">
                 {activeTab === 'leads' && (
-                  <Button
-                    onClick={fetchLeads}
-                    variant="outline"
-                    className="border-white/10 text-white hover:bg-white/5 flex items-center space-x-1.5 px-5 py-2.5 rounded-xl transition-all font-semibold"
-                  >
-                    <LucideIcons.RefreshCw size={16} />
-                    <span>Refresh</span>
-                  </Button>
+                  <>
+                    <Button
+                      onClick={fetchLeads}
+                      variant="outline"
+                      className="border-white/10 text-white hover:bg-white/5 flex items-center space-x-1.5 px-5 py-2.5 rounded-xl transition-all font-semibold"
+                    >
+                      <LucideIcons.RefreshCw size={16} />
+                      <span>Refresh</span>
+                    </Button>
+                    <label className="cursor-pointer border border-white/10 text-white hover:bg-white/5 flex items-center space-x-1.5 px-5 py-2.5 rounded-xl transition-all font-semibold text-sm">
+                      <LucideIcons.Upload size={16} />
+                      <span>Upload CSV</span>
+                      <input type="file" accept=".csv" className="hidden" onChange={handleCsvUpload} />
+                    </label>
+                  </>
                 )}
                 <Button 
                   onClick={() => { setEditingItem({}); setUploadedImageUrl(''); }} 
