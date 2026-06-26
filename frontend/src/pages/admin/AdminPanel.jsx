@@ -216,9 +216,9 @@ const AdminPanel = () => {
           if (!hasData) continue;
           
           // Ensure mandatory fields exist for the backend model
-          if (!newClient.companyName) newClient.companyName = newClient.name || 'Unknown Company';
-          if (!newClient.phone) newClient.phone = 'N/A';
-          if (!newClient.email) newClient.email = 'unknown@example.com';
+          if (!newClient.companyName) newClient.companyName = newClient.name || 'NIL';
+          if (!newClient.phone) newClient.phone = 'NIL';
+          if (!newClient.email) newClient.email = 'NIL';
 
           try {
             await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/clients`, {
