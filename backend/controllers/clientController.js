@@ -10,7 +10,7 @@ exports.createClient = async (req, res) => {
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (email.toLowerCase() !== 'nil' && !emailRegex.test(email)) {
       return res.status(400).json({ success: false, message: 'Invalid email format' });
     }
 

@@ -192,6 +192,8 @@ const AdminPanel = () => {
 
         const headers = parseCSVLine(lines[0]);
         let addedCount = 0;
+        let skippedCount = 0;
+        const existingCompanies = new Set(leads.map(lead => lead.companyName?.trim().toLowerCase()).filter(Boolean));
 
         for (let i = 1; i < lines.length; i++) {
           const row = parseCSVLine(lines[i]);
@@ -216,9 +218,23 @@ const AdminPanel = () => {
           if (!hasData) continue;
           
           // Ensure mandatory fields exist for the backend model
-          if (!newClient.companyName) newClient.companyName = newClient.name || 'NIL';
-          if (!newClient.phone) newClient.phone = 'NIL';
-          if (!newClient.email) newClient.email = 'NIL';
+          if (!newClient.companyName || newClient.companyName.trim() === '') newClient.companyName = newClient.name || 'NIL';
+          if (!newClient.phone || newClient.phone.trim() === '') newClient.phone = 'NIL';
+          
+          // Validate email; if empty or invalid string (like "Email not publicly visible"), set to 'NIL'
+          if (!newClient.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newClient.email)) {
+            newClient.email = 'NIL';
+          }
+
+          // Deduplication check
+          const normalizedCompanyName = newClient.companyName.trim().toLowerCase();
+          if (existingCompanies.has(normalizedCompanyName) && normalizedCompanyName !== 'nil') {
+            skippedCount++;
+            continue;
+          }
+          if (normalizedCompanyName !== 'nil') {
+            existingCompanies.add(normalizedCompanyName);
+          }
 
           try {
             await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/clients`, {
@@ -235,7 +251,7 @@ const AdminPanel = () => {
           }
         }
 
-        setSuccess(`Successfully added ${addedCount} clients from CSV.`);
+        setSuccess(`Successfully added ${addedCount} clients from CSV.${skippedCount > 0 ? ` Skipped ${skippedCount} duplicate(s).` : ''}`);
         loadAllData(); // Refresh the table
       } catch (err) {
         setError('Failed to parse CSV file.');
