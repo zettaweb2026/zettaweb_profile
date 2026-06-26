@@ -397,13 +397,25 @@ const AdminPanel = () => {
               </p>
             </div>
             {!editingItem && (
-              <Button 
-                onClick={() => { setEditingItem({}); setUploadedImageUrl(''); }} 
-                className="bg-primary hover:bg-primary/95 text-white flex items-center space-x-1.5 px-5 py-2.5 rounded-xl transition-all shadow-md shadow-primary/10 hover:scale-[1.02] font-semibold"
-              >
-                <LucideIcons.Plus size={16} />
-                <span>Add New</span>
-              </Button>
+              <div className="flex items-center space-x-3">
+                {activeTab === 'leads' && (
+                  <Button
+                    onClick={fetchLeads}
+                    variant="outline"
+                    className="border-white/10 text-white hover:bg-white/5 flex items-center space-x-1.5 px-5 py-2.5 rounded-xl transition-all font-semibold"
+                  >
+                    <LucideIcons.RefreshCw size={16} />
+                    <span>Refresh</span>
+                  </Button>
+                )}
+                <Button 
+                  onClick={() => { setEditingItem({}); setUploadedImageUrl(''); }} 
+                  className="bg-primary hover:bg-primary/95 text-white flex items-center space-x-1.5 px-5 py-2.5 rounded-xl transition-all shadow-md shadow-primary/10 hover:scale-[1.02] font-semibold"
+                >
+                  <LucideIcons.Plus size={16} />
+                  <span>Add New</span>
+                </Button>
+              </div>
             )}
           </div>
 
