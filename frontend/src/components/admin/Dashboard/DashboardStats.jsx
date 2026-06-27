@@ -26,7 +26,11 @@ const DashboardStats = ({ stats, loading }) => {
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{stat.label}</p>
                 <p className="text-3xl font-black text-white mt-1">
-                  {loading ? <LucideIcons.Loader2 className="animate-spin" size={28} /> : stat.value}
+                  {loading ? (
+                    <LucideIcons.Loader2 className="animate-spin" size={28} />
+                  ) : (
+                    stat.value ?? 0
+                  )}
                 </p>
               </div>
             </div>
