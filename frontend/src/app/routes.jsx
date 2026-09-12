@@ -83,6 +83,9 @@ const AppRoutes = ({ Home }) => (
     <Route element={<ProtectedAdminRoute />}>
       <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
       <Route path="/admin/dashboard" element={<AdminPanel />} />
+      <Route path="/admin/invoices" element={<AdminPanel />} />
+      <Route path="/admin/contracts" element={<AdminPanel />} />
+      <Route path="/admin/clients" element={<AdminPanel />} />
       <Route path="/admin/projects/create" element={<AdminPanel />} />
       <Route path="/admin/projects/update" element={<AdminPanel />} />
       <Route path="/admin/projects/delete" element={<AdminPanel />} />

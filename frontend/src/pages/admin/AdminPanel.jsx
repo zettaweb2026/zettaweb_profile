@@ -5,6 +5,10 @@ import { Button } from '../../components/ui/button';
 import { clearAuthSession, getAuthHeaders, getStoredUser, parseApiResponse } from '../../lib/auth';
 import * as LucideIcons from 'lucide-react';
 
+import InvoicesManager from '../../features/invoices/InvoicesManager';
+import ContractsManager from '../../features/contracts/ContractsManager';
+import ClientsManager from '../../features/clients/ClientsManager';
+
 const AdminPanel = () => {
   const navigate = useNavigate();
   const currentUser = getStoredUser();
@@ -27,6 +31,9 @@ const AdminPanel = () => {
     { id: 'aboutValues', label: 'About Values', icon: 'Heart' },
     { id: 'aboutTimeline', label: 'About Timeline', icon: 'Calendar' },
     { id: 'leads', label: 'Client Record', icon: 'PhoneCall' },
+    { id: 'invoices', label: 'PDF Invoices', icon: 'FileText' },
+    { id: 'contracts', label: 'Contracts', icon: 'Shield' },
+    { id: 'clients', label: 'Clients Directory', icon: 'Users' },
     { id: 'admins', label: 'Admins', icon: 'Users' }
   ];
 
@@ -373,7 +380,11 @@ const AdminPanel = () => {
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="container mx-auto max-w-6xl relative z-10">
+      <div className={`container mx-auto relative z-10 transition-all duration-300 ${
+        activeTab === 'invoices' || activeTab === 'contracts'
+          ? 'max-w-[1920px] w-full px-2 sm:px-6'
+          : 'max-w-6xl'
+      }`}>
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-16 gap-6">
@@ -466,7 +477,11 @@ const AdminPanel = () => {
         )}
 
         {/* Main Content Area */}
-        <Card className="glass-card border-white/5 p-8 rounded-3xl relative overflow-hidden backdrop-blur-lg">
+        <Card className={`glass-card border-white/5 rounded-3xl relative overflow-hidden backdrop-blur-lg transition-all duration-300 ${
+          activeTab === 'invoices' || activeTab === 'contracts'
+            ? 'p-2 sm:p-6'
+            : 'p-8'
+        }`}>
           <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 border-b border-white/5 pb-6 gap-4">
             <div>
               <h3 className="text-2xl font-black text-white flex items-center space-x-2">
@@ -767,7 +782,11 @@ const AdminPanel = () => {
             </form>
           ) : (
             <div className="space-y-4">
-              {(() => {
+              {activeTab === 'invoices' && <InvoicesManager />}
+              {activeTab === 'contracts' && <ContractsManager />}
+              {activeTab === 'clients' && <ClientsManager />}
+
+              {activeTab !== 'invoices' && activeTab !== 'contracts' && activeTab !== 'clients' && (() => {
                 let currentData = [];
                 if (activeTab === 'projects') currentData = projects;
                 if (activeTab === 'testimonials') currentData = testimonials;

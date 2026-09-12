@@ -82,3 +82,4 @@ android-sdk/
 .env
 backend/config/serviceAccountKey.json
 **/serviceAccountKey.json
+InvoiceSystem_repo/

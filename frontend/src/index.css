@@ -1,5 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
 
+@font-face {
+  font-family: 'NotoSans';
+  src: url('/fonts/NotoSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'NotoSans';
+  src: url('/fonts/NotoSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'NotoSans';
+  src: url('/fonts/NotoSans-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Scoped 1:1 Invoice Paper Typography & Box-Model Alignment */
+.invoice-paper-canvas,
+.invoice-paper-canvas * {
+  font-family: 'NotoSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  box-sizing: border-box;
+}
+
+.invoice-paper-canvas h1,
+.invoice-paper-canvas h2,
+.invoice-paper-canvas h3,
+.invoice-paper-canvas h4 {
+  font-family: 'NotoSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  letter-spacing: normal !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -191,6 +225,26 @@
     }
   }
   
+  @keyframes shine {
+    100% {
+      left: 125%;
+    }
+  }
+
+  @keyframes shimmer {
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .animate-shine {
+    animation: shine 1.2s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2.5s linear infinite;
+  }
+
   .animate-float-slow {
     animation: float 6s ease-in-out infinite;
   }
