@@ -4,7 +4,7 @@ const User = require('../models/User');
 const signToken = (user) => {
   return jwt.sign(
     {
-      id: user._id.toString(),
+      id: (user._id || user.id).toString(),
       role: user.role,
     },
     process.env.JWT_SECRET || 'change-this-jwt-secret',
@@ -19,7 +19,7 @@ const sanitizeUser = (user) => {
   const isSuperAdmin = user.email.toLowerCase().trim() === SUPER_ADMIN_EMAIL;
 
   return {
-    id: user._id.toString(),
+    id: (user._id || user.id).toString(),
     name: user.name,
     email: user.email,
     role: isSuperAdmin ? 'admin' : user.role,
@@ -91,7 +91,8 @@ const login = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
+    const bcrypt = require('bcrypt');
+    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password').lean();
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -99,7 +100,7 @@ const login = async (req, res) => {
       });
     }
 
-    const isPasswordValid = await user.comparePassword(password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,

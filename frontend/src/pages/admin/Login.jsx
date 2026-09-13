@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AlertCircle, Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, Lock, LogIn, Mail, Loader2 } from "lucide-react";
 
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
@@ -20,6 +20,15 @@ const Login = () => {
     password: "",
     rememberMe: false,
   });
+
+  // Pre-warm backend and MongoDB on page mount and form interaction
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/health`, { keepalive: true }).catch(() => {});
+  }, []);
+
+  const prewarmServer = () => {
+    fetch(`${API_BASE_URL}/health`, { keepalive: true }).catch(() => {});
+  };
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -126,6 +135,7 @@ const Login = () => {
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
+                    onFocus={prewarmServer}
                     placeholder="you@example.com"
                     required
                     className="h-11 pl-10"
@@ -140,6 +150,7 @@ const Login = () => {
                     Forgot password?
                   </Link>
                 </div>
+
                 <div className="relative">
                   <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
@@ -148,6 +159,7 @@ const Login = () => {
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={handleChange}
+                    onFocus={prewarmServer}
                     placeholder="Enter your password"
                     required
                     className="h-11 px-10"
@@ -175,8 +187,17 @@ const Login = () => {
               </label>
 
               <Button type="submit" disabled={isSubmitting} className="h-11 w-full rounded-xl font-bold">
-                <LogIn className="h-4 w-4" />
-                {isSubmitting ? "Logging in..." : "Login"}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="h-4 w-4" />
+                    <span>Login</span>
+                  </>
+                )}
               </Button>
             </form>
           </CardContent>
