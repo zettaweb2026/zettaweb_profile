@@ -3,15 +3,21 @@ const path = require('path');
 const mongoose = require('mongoose');
 const Models = require('../models/contentModels');
 
-const dbFilePath = path.join(__dirname, '../db.json');
+const possiblePaths = [
+  path.join(__dirname, '../data/db.json'),
+  path.join(__dirname, '../db.json')
+];
 let fallbackDb = {};
 
-try {
-  if (fs.existsSync(dbFilePath)) {
-    fallbackDb = JSON.parse(fs.readFileSync(dbFilePath, 'utf8'));
+for (const p of possiblePaths) {
+  try {
+    if (fs.existsSync(p)) {
+      fallbackDb = JSON.parse(fs.readFileSync(p, 'utf8'));
+      break;
+    }
+  } catch (err) {
+    console.warn(`Failed to load fallback ${p}:`, err.message);
   }
-} catch (err) {
-  console.warn('Failed to load fallback db.json:', err.message);
 }
 
 const getFallbackResource = (resource) => {
@@ -40,19 +46,13 @@ exports.getAllContent = async (req, res) => {
 
     let data = [];
     try {
-      if (mongoose.connection.readyState === 1) {
-        data = await Model.find();
-      } else {
-        const fallbackData = getFallbackResource(resource);
-        if (fallbackData.length > 0) {
-          return res.json(fallbackData);
-        }
-        return res.status(503).json({
-          success: false,
-          message: 'Database offline and no fallback available',
-        });
+      if (mongoose.connection.readyState !== 1) {
+        const connectDb = require('../config/db');
+        await connectDb();
       }
+      data = await Model.find();
     } catch (queryError) {
+      console.warn(`[Content API] Query failed for ${resource}, using fallback:`, queryError.message);
       const fallbackData = getFallbackResource(resource);
       if (fallbackData.length > 0) {
         return res.json(fallbackData);
@@ -62,6 +62,10 @@ exports.getAllContent = async (req, res) => {
 
     return res.json(data);
   } catch (error) {
+    const fallbackData = getFallbackResource(req.params.resource);
+    if (fallbackData.length > 0) {
+      return res.json(fallbackData);
+    }
     return res.status(500).json({
       success: false,
       message: error.message,

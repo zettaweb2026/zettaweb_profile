@@ -3,15 +3,19 @@ const mongoose = require('mongoose');
 let cachedDb = null;
 
 const connectDb = async () => {
-  // If connection is ready (1) or connecting (2), return immediately
-  if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
+  // If connection is already open (readyState === 1), return immediately
+  if (mongoose.connection.readyState === 1) {
     return mongoose.connection;
   }
 
-  if (!cachedDb) {
-    console.log('Initializing MongoDB connection...');
-    cachedDb = mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/webnexa');
+  // If already connecting, await the existing cached promise
+  if (cachedDb) {
+    await cachedDb;
+    return mongoose.connection;
   }
+
+  console.log('Initializing MongoDB connection...');
+  cachedDb = mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/webnexa');
 
   try {
     await cachedDb;

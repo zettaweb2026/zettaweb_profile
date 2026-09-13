@@ -8,18 +8,38 @@ import * as LucideIcons from 'lucide-react';
 import InvoicesManager from '../../features/invoices/InvoicesManager';
 import ContractsManager from '../../features/contracts/ContractsManager';
 import ClientsManager from '../../features/clients/ClientsManager';
+import {
+  fallbackProjects,
+  fallbackServices,
+  fallbackTestimonials,
+  fallbackTechStack,
+  fallbackAboutValues,
+  fallbackAboutTimeline,
+} from '../../lib/fallbackData';
+
+const getInitialAdminData = (key, fallback = []) => {
+  try {
+    const saved = localStorage.getItem(`admin_cache_${key}`);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {}
+  return fallback;
+};
 
 const AdminPanel = () => {
   const navigate = useNavigate();
   const currentUser = getStoredUser();
-  const [projects, setProjects] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
-  const [services, setServices] = useState([]);
-  const [techStack, setTechStack] = useState([]);
-  const [aboutValues, setAboutValues] = useState([]);
-  const [aboutTimeline, setAboutTimeline] = useState([]);
-  const [admins, setAdmins] = useState([]);
-  const [leads, setLeads] = useState([]);
+  const [projects, setProjects] = useState(() => getInitialAdminData('projects', fallbackProjects));
+  const [testimonials, setTestimonials] = useState(() => getInitialAdminData('testimonials', fallbackTestimonials));
+  const [services, setServices] = useState(() => getInitialAdminData('services', fallbackServices));
+  const [techStack, setTechStack] = useState(() => getInitialAdminData('techStack', fallbackTechStack));
+  const [aboutValues, setAboutValues] = useState(() => getInitialAdminData('aboutValues', fallbackAboutValues));
+  const [aboutTimeline, setAboutTimeline] = useState(() => getInitialAdminData('aboutTimeline', fallbackAboutTimeline));
+  const [admins, setAdmins] = useState(() => getInitialAdminData('admins', []));
+  const [leads, setLeads] = useState(() => getInitialAdminData('leads', []));
+  const [loading, setLoading] = useState(false);
 
   const isSuperAdmin = currentUser && currentUser.isSuperAdmin;
   
@@ -68,14 +88,26 @@ const AdminPanel = () => {
     }
   }, [navigate]);
 
-  const fetchData = useCallback(async (resource, setter) => {
+  const fetchData = useCallback(async (resource, setter, retries = 2) => {
     try {
       const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/${resource}`);
       if (res.ok) {
-        setter(await res.json());
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setter(data);
+          try {
+            localStorage.setItem(`admin_cache_${resource}`, JSON.stringify(data));
+          } catch (e) {}
+        }
+      } else if (res.status === 503 && retries > 0) {
+        // Cold-start retry after 1.5s
+        setTimeout(() => fetchData(resource, setter, retries - 1), 1500);
       }
     } catch (err) {
-      console.error(`Failed to fetch ${resource}:`, err);
+      console.warn(`Fetch ${resource} initial notice:`, err.message);
+      if (retries > 0) {
+        setTimeout(() => fetchData(resource, setter, retries - 1), 1500);
+      }
     }
   }, []);
 
@@ -86,7 +118,13 @@ const AdminPanel = () => {
       });
       if (res.ok) {
         const json = await res.json();
-        setLeads(json.data || []);
+        const data = json.data || [];
+        setLeads(data);
+        if (data.length > 0) {
+          try {
+            localStorage.setItem('admin_cache_leads', JSON.stringify(data));
+          } catch (e) {}
+        }
       }
     } catch (err) {
       console.error('Failed to fetch leads:', err);
@@ -102,6 +140,9 @@ const AdminPanel = () => {
       const data = await parseApiResponse(res);
       if (data.users) {
         setAdmins(data.users);
+        try {
+          localStorage.setItem('admin_cache_admins', JSON.stringify(data.users));
+        } catch (e) {}
       }
     } catch (err) {
       console.error('Failed to fetch admins:', err);
@@ -109,16 +150,21 @@ const AdminPanel = () => {
     }
   }, [isSuperAdmin, handleUnauthorized]);
 
-  const loadAllData = useCallback(() => {
-    fetchData('projects', setProjects);
-    fetchData('testimonials', setTestimonials);
-    fetchData('services', setServices);
-    fetchData('techStack', setTechStack);
-    fetchData('aboutValues', setAboutValues);
-    fetchData('aboutTimeline', setAboutTimeline);
-    fetchLeads();    // for  client records
-    if (isSuperAdmin) {
-      fetchAdmins();
+  const loadAllData = useCallback(async () => {
+    setLoading(true);
+    try {
+      await Promise.allSettled([
+        fetchData('projects', setProjects),
+        fetchData('testimonials', setTestimonials),
+        fetchData('services', setServices),
+        fetchData('techStack', setTechStack),
+        fetchData('aboutValues', setAboutValues),
+        fetchData('aboutTimeline', setAboutTimeline),
+        fetchLeads(),
+        isSuperAdmin ? fetchAdmins() : Promise.resolve(),
+      ]);
+    } finally {
+      setLoading(false);
     }
   }, [fetchData, fetchAdmins, fetchLeads, isSuperAdmin]);
 
